@@ -75,13 +75,14 @@ async def health_check():
 
 
 # Import and register route modules
-# These will be added after creating the route files
-# from routes import auth, finance, projects, assets, impact
-# app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-# app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
-# app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
-# app.include_router(assets.router, prefix="/api/assets", tags=["Assets"])
-# app.include_router(impact.router, prefix="/api/impact", tags=["Impact"])
+from routes import auth, finance, projects, assets, impact
+
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
+app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
+app.include_router(assets.router, prefix="/api/assets", tags=["Assets"])
+app.include_router(impact.router, prefix="/api/impact", tags=["Impact"])
+
 
 
 # Global exception handler
