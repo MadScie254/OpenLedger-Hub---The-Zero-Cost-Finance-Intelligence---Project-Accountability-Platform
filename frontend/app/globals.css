@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   OPENLEDGER BLACK - GLOBAL STYLES
+   VIP Dark Theme - Executive Grade Design System
+   ============================================================================ */
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --accent-blue: #0ea5e9;
+  --accent-emerald: #10b981;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0a0a0a;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  background-attachment: fixed;
+}
+
+/* ============================================================================
+   SCROLLBAR - MILITARY PRECISION
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0ea5e9;
+}
+
+/* ============================================================================
+   GLASSMORPHISM UTILITIES
+   ============================================================================ */
+
+@layer components {
+  .glass-card {
+    @apply bg-glass-white backdrop-blur-glass border border-glass-border rounded-lg shadow-glass;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:border-electric-blue hover:shadow-glow-blue;
+  }
+
+  .executive-card {
+    @apply bg-black-secondary border border-black-border rounded-lg p-6 
+           transition-all duration-300 hover:border-electric-blue hover:shadow-glow-blue;
+  }
+
+  .neon-button {
+    @apply bg-electric-blue text-white font-semibold px-6 py-3 rounded-lg
+           transition-all duration-300 hover:bg-electric-blue-dark hover:shadow-glow-blue
+           active:scale-95;
+  }
+
+  .ghost-button {
+    @apply bg-transparent border-2 border-electric-blue text-electric-blue font-semibold px-6 py-3 rounded-lg
+           transition-all duration-300 hover:bg-electric-blue hover:text-white
+           active:scale-95;
+  }
+
+  .stat-card {
+    @apply executive-card flex flex-col gap-2;
+  }
+
+  .metric-value {
+    @apply text-3xl font-bold text-white;
+  }
+
+  .metric-label {
+    @apply text-sm font-medium text-gray-400 uppercase tracking-wider;
+  }
+
+  .metric-change-positive {
+    @apply text-emerald text-sm font-semibold flex items-center gap-1;
+  }
+
+  .metric-change-negative {
+    @apply text-crimson text-sm font-semibold flex items-center gap-1;
+  }
+}
+
+/* ============================================================================
+   INPUT FIELDS - SURGICAL PRECISION
+   ============================================================================ */
+
+@layer components {
+  .input-executive {
+    @apply w-full bg-black-tertiary border border-black-border rounded-lg px-4 py-3
+           text-white placeholder-gray-500 
+           focus:outline-none focus:border-electric-blue focus:ring-2 focus:ring-electric-blue/20
+           transition-all duration-200;
+  }
+
+  .input-error {
+    @apply border-crimson focus:border-crimson focus:ring-crimson/20;
+  }
+
+  .label-executive {
+    @apply block text-sm font-semibold text-gray-300 mb-2;
+  }
+}
+
+/* ============================================================================
+   TABLE STYLES - DATA PRECISION
+   ============================================================================ */
+
+@layer components {
+  .table-executive {
+    @apply w-full border-collapse;
+  }
+
+  .table-executive thead {
+    @apply bg-black-tertiary;
+  }
+
+  .table-executive th {
+    @apply px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-black-border;
+  }
+
+  .table-executive td {
+    @apply px-6 py-4 text-sm text-gray-300 border-b border-black-border;
+  }
+
+  .table-executive tbody tr {
+    @apply transition-colors duration-200 hover:bg-black-tertiary/50;
+  }
+}
+
+/* ============================================================================
+   BADGE STYLES
+   ============================================================================ */
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald/20 text-emerald border border-emerald/30;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber/20 text-amber border border-amber/30;
+  }
+
+  .badge-danger {
+    @apply badge bg-crimson/20 text-crimson border border-crimson/30;
+  }
+
+  .badge-info {
+    @apply badge bg-electric-blue/20 text-electric-blue border border-electric-blue/30;
+  }
+
+  .badge-neutral {
+    @apply badge bg-gray-500/20 text-gray-400 border border-gray-500/30;
+  }
+}
+
+/* ============================================================================
+   ANIMATIONS - SMOOTH OPERATOR
+   ============================================================================ */
+
+@layer utilities {
+  .animate-enter {
+    animation: fadeIn 0.5s ease-in-out, slideUp 0.5s ease-out;
+  }
+
+  .stagger-item {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards, slideUp 0.5s ease-out forwards;
+  }
+
+  .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+}
+
+/* ============================================================================
+   LOADING STATES
+   ============================================================================ */
+
+@layer components {
+  .skeleton {
+    @apply bg-black-tertiary animate-pulse rounded;
+  }
+
+  .spinner {
+    @apply inline-block w-6 h-6 border-3 border-electric-blue border-t-transparent rounded-full animate-spin;
+  }
+}
