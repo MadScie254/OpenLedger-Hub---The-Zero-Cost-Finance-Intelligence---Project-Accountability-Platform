@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenLedger Black - Test Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .blue {
+            color: #0ea5e9;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+        .card:hover {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+        .metric-label {
+            color: #a3a3a3;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+        .metric-change {
+            color: #10b981;
+            font-size: 14px;
+        }
+        .success {
+            color: #10b981;
+            font-size: 18px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>OpenLedger <span class="blue">Black</span></h1>
+            <p style="color: #a3a3a3; margin-top: 8px;">Executive Dashboard - Test Page</p>
+        </div>
+
+        <div class="success">
+            ✅ <strong>DASHBOARD IS WORKING!</strong><br>
+            If you can see this, the frontend server is running correctly.
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="metric-label">Net Cashflow (30d)</div>
+                <div class="metric-value">$37,500</div>
+                <div class="metric-change">↑ 30.0%</div>
+            </div>
+
+            <div class="card">
+                <div class="metric-label">Daily Burn Rate</div>
+                <div class="metric-value">$2,916</div>
+                <div class="metric-change">per day</div>
+            </div>
+
+            <div class="card">
+                <div class="metric-label">Active Projects</div>
+                <div class="metric-value">4</div>
+                <div class="metric-change">$500,000 total budget</div>
+            </div>
+
+            <div class="card">
+                <div class="metric-label">Budget Utilization</div>
+                <div class="metric-value">57.5%</div>
+                <div class="metric-change">$287,500 spent</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid #0ea5e9; border-radius: 12px;">
+            <h3 style="color: #0ea5e9; margin-bottom: 16px;">📋 Troubleshooting</h3>
+            <p style="color: #a3a3a3; line-height: 1.8;">
+                ✅ Frontend Server: Running on http://localhost:3001<br>
+                ✅ Backend API: Running on http://localhost:8000<br>
+                ✅ Dashboard Route: Working<br>
+                <br>
+                <strong style="color: white;">If you see this page but not the React dashboard:</strong><br>
+                1. The Next.js app might not have compiled the dashboard component<br>
+                2. Chart.js might be failing to load<br>
+                3. There might be a JavaScript error in the browser console<br>
+                <br>
+                <strong style="color: white;">Next steps:</strong><br>
+                → Press F12 and check the Console tab for errors<br>
+                → Try navigating to http://localhost:3001 directly<br>
+                → Check if you see any JavaScript errors
+            </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #666;">
+            <p>OpenLedger Black v1.0.0 • Zero external dependencies • SQLite-powered</p>
+        </div>
+    </div>
+</body>
+</html>
