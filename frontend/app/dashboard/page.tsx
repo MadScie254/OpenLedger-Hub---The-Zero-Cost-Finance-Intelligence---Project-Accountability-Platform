@@ -1,290 +1,144 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler,
-} from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-);
-
-interface DashboardStats {
-    total_income: number;
-    total_expenses: number;
-    net_cashflow: number;
-    burn_rate: number;
-    active_projects: number;
-    total_budget: number;
-    budget_spent: number;
-    budget_utilization: number;
-    low_stock_items: number;
-    upcoming_maintenances: number;
-    total_beneficiaries: number;
-}
-
 export default function DashboardPage() {
-    const [stats, setStats] = useState<DashboardStats>({
-        total_income: 125000,
-        total_expenses: 87500,
-        net_cashflow: 37500,
-        burn_rate: 2916,
-        active_projects: 4,
-        total_budget: 500000,
-        budget_spent: 287500,
-        budget_utilization: 57.5,
-        low_stock_items: 3,
-        upcoming_maintenances: 5,
-        total_beneficiaries: 1247,
-    });
-
-    const budgetRemaining = stats.total_budget - stats.budget_spent;
-    const cashflowChange = ((stats.net_cashflow / (stats.total_income || 1)) * 100).toFixed(1);
-
-    const cashflowData = {
-        labels: ['Income', 'Expenses'],
-        datasets: [
-            {
-                data: [stats.total_income, stats.total_expenses],
-                backgroundColor: ['rgba(16, 185, 129, 0.8)', 'rgba(220, 38, 38, 0.8)'],
-                borderColor: ['#10b981', '#dc2626'],
-                borderWidth: 2,
-            },
-        ],
-    };
-
-    const budgetData = {
-        labels: ['Spent', 'Remaining'],
-        datasets: [
-            {
-                data: [stats.budget_spent, budgetRemaining],
-                backgroundColor: ['rgba(14, 165, 233, 0.8)', 'rgba(42, 42, 42, 0.8)'],
-                borderColor: ['#0ea5e9', '#2a2a2a'],
-                borderWidth: 2,
-            },
-        ],
-    };
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'bottom' as const,
-                labels: {
-                    color: '#a3a3a3',
-                    font: {
-                        size: 12,
-                    },
-                },
-            },
-        },
-    };
-
     return (
-        <div className="min-h-screen bg-gradient-mesh">
-            {/* Navigation Header */}
-            <nav className="glass-card m-4 p-4 flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-white">
-                        OpenLedger <span className="text-electric-blue">Black</span>
-                    </h1>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="text-right">
-                        <p className="text-sm text-gray-400">Logged in as</p>
-                        <p className="text-white font-semibold">Demo User</p>
-                    </div>
-                </div>
-            </nav>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)', padding: '20px' }}>
+            {/* Header */}
+            <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '20px', marginBottom: '30px' }}>
+                <h1 style={{ fontSize: '32px', fontWeight: '700', color: 'white', margin: 0 }}>
+                    OpenLedger <span style={{ color: '#0ea5e9' }}>Black</span>
+                </h1>
+                <p style={{ color: '#a3a3a3', marginTop: '8px', marginBottom: 0 }}>Executive Dashboard - Real-time Intelligence</p>
+            </div>
 
-            {/* Main Dashboard */}
-            <div className="p-4 space-y-6">
-                {/* Header */}
-                <div className="stagger-item">
-                    <h2 className="text-3xl font-bold text-white mb-2">Executive Dashboard</h2>
-                    <p className="text-gray-400">Real-time financial intelligence and project oversight</p>
-                </div>
+            {/* Title */}
+            <div style={{ marginBottom: '30px' }}>
+                <h2 style={{ fontSize: '36px', fontWeight: '700', color: 'white', marginBottom: '8px' }}>Executive Dashboard</h2>
+                <p style={{ color: '#a3a3a3' }}>Real-time financial intelligence and project oversight</p>
+            </div>
 
-                {/* Key Metrics Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Net Cashflow */}
-                    <div className="stat-card stagger-item">
-                        <div className="metric-label">Net Cashflow (30d)</div>
-                        <div className="metric-value">
-                            ${stats.net_cashflow.toLocaleString()}
-                        </div>
-                        <div className={stats.net_cashflow >= 0 ? 'metric-change-positive' : 'metric-change-negative'}>
-                            {stats.net_cashflow >= 0 ? '↑' : '↓'} {cashflowChange}%
-                        </div>
-                    </div>
-
-                    {/* Burn Rate */}
-                    <div className="stat-card stagger-item">
-                        <div className="metric-label">Daily Burn Rate</div>
-                        <div className="metric-value">
-                            ${stats.burn_rate.toLocaleString()}
-                        </div>
-                        <div className="text-sm text-gray-400">per day</div>
-                    </div>
-
-                    {/* Active Projects */}
-                    <div className="stat-card stagger-item">
-                        <div className="metric-label">Active Projects</div>
-                        <div className="metric-value">{stats.active_projects}</div>
-                        <div className="text-sm text-gray-400">
-                            ${stats.total_budget.toLocaleString()} total budget
-                        </div>
-                    </div>
-
-                    {/* Budget Utilization */}
-                    <div className="stat-card stagger-item">
-                        <div className="metric-label">Budget Utilization</div>
-                        <div className="metric-value">{stats.budget_utilization.toFixed(1)}%</div>
-                        <div className="text-sm text-gray-400">
-                            ${stats.budget_spent.toLocaleString()} spent
-                        </div>
-                    </div>
+            {/* Metrics Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+                {/* Net Cashflow */}
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', transition: 'all 0.3s' }}>
+                    <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>NET CASHFLOW (30D)</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: 'white', marginBottom: '8px' }}>$37,500</div>
+                    <div style={{ color: '#10b981', fontSize: '14px', fontWeight: '600' }}>↑ 30.0%</div>
                 </div>
 
-                {/* Charts Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Cashflow Breakdown */}
-                    <div className="executive-card stagger-item">
-                        <h3 className="text-xl font-bold text-white mb-4">Cashflow Breakdown</h3>
-                        <div className="h-64">
-                            <Doughnut data={cashflowData} options={chartOptions} />
-                        </div>
-                        <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <div className="text-gray-400">Total Income</div>
-                                <div className="text-emerald font-bold text-lg">
-                                    ${stats.total_income.toLocaleString()}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-gray-400">Total Expenses</div>
-                                <div className="text-crimson font-bold text-lg">
-                                    ${stats.total_expenses.toLocaleString()}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Budget Status */}
-                    <div className="executive-card stagger-item">
-                        <h3 className="text-xl font-bold text-white mb-4">Budget Status</h3>
-                        <div className="h-64">
-                            <Doughnut data={budgetData} options={chartOptions} />
-                        </div>
-                        <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <div className="text-gray-400">Allocated</div>
-                                <div className="text-white font-bold text-lg">
-                                    ${stats.total_budget.toLocaleString()}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-gray-400">Remaining</div>
-                                <div className="text-electric-blue font-bold text-lg">
-                                    ${budgetRemaining.toLocaleString()}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                {/* Burn Rate */}
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', transition: 'all 0.3s' }}>
+                    <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>DAILY BURN RATE</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: 'white', marginBottom: '8px' }}>$2,916</div>
+                    <div style={{ color: '#a3a3a3', fontSize: '14px' }}>per day</div>
                 </div>
 
-                {/* Quick Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Beneficiaries */}
-                    <div className="executive-card stagger-item">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="metric-label">Total Beneficiaries</div>
-                                <div className="text-2xl font-bold text-white mt-2">
-                                    {stats.total_beneficiaries.toLocaleString()}
-                                </div>
-                            </div>
-                            <div className="text-4xl text-electric-blue">👥</div>
-                        </div>
-                    </div>
-
-                    {/* Inventory Alerts */}
-                    <div className="executive-card stagger-item">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="metric-label">Low Stock Items</div>
-                                <div className="text-2xl font-bold text-amber mt-2">
-                                    {stats.low_stock_items}
-                                </div>
-                            </div>
-                            <div className="text-4xl text-amber">⚠️</div>
-                        </div>
-                        {stats.low_stock_items > 0 && (
-                            <div className="mt-2 text-xs text-amber">Restock required</div>
-                        )}
-                    </div>
-
-                    {/* Maintenance Due */}
-                    <div className="executive-card stagger-item">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="metric-label">Upcoming Maintenance</div>
-                                <div className="text-2xl font-bold text-white mt-2">
-                                    {stats.upcoming_maintenances}
-                                </div>
-                            </div>
-                            <div className="text-4xl text-gray-400">🔧</div>
-                        </div>
-                        <div className="mt-2 text-xs text-gray-400">Next 30 days</div>
-                    </div>
+                {/* Active Projects */}
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', transition: 'all 0.3s' }}>
+                    <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>ACTIVE PROJECTS</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: 'white', marginBottom: '8px' }}>4</div>
+                    <div style={{ color: '#a3a3a3', fontSize: '14px' }}>$500,000 total budget</div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="executive-card stagger-item">
-                    <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <button className="neon-button">
-                            Record Transaction
-                        </button>
-                        <button className="ghost-button">
-                            Create Project
-                        </button>
-                        <button className="ghost-button">
-                            Add Asset
-                        </button>
-                        <button className="ghost-button">
-                            Record KPI
-                        </button>
-                    </div>
-                </div>
-
-                {/* System Status */}
-                <div className="text-center text-xs text-gray-600 py-4">
-                    <p>OpenLedger Black v1.0.0 • All systems operational • Zero external dependencies</p>
+                {/* Budget Utilization */}
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', transition: 'all 0.3s' }}>
+                    <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>BUDGET UTILIZATION</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: 'white', marginBottom: '8px' }}>57.5%</div>
+                    <div style={{ color: '#a3a3a3', fontSize: '14px' }}>$287,500 spent</div>
                 </div>
             </div>
-        </div >
+
+            {/* Financial Summary */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px', marginBottom: '30px' }}>
+                {/* Income vs Expenses */}
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px' }}>
+                    <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'white', marginBottom: '20px' }}>Cashflow Breakdown</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div>
+                            <div style={{ color: '#a3a3a3', fontSize: '14px', marginBottom: '8px' }}>Total Income</div>
+                            <div style={{ color: '#10b981', fontSize: '24px', fontWeight: '700' }}>$125,000</div>
+                        </div>
+                        <div>
+                            <div style={{ color: '#a3a3a3', fontSize: '14px', marginBottom: '8px' }}>Total Expenses</div>
+                            <div style={{ color: '#dc2626', fontSize: '24px', fontWeight: '700' }}>$87,500</div>
+                        </div>
+                    </div>
+                    <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px' }}>
+                        <div style={{ color: '#10b981', fontSize: '14px', fontWeight: '600' }}>Net Positive: $37,500</div>
+                    </div>
+                </div>
+
+                {/* Budget Status */}
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px' }}>
+                    <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'white', marginBottom: '20px' }}>Budget Status</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div>
+                            <div style={{ color: '#a3a3a3', fontSize: '14px', marginBottom: '8px' }}>Allocated</div>
+                            <div style={{ color: 'white', fontSize: '24px', fontWeight: '700' }}>$500,000</div>
+                        </div>
+                        <div>
+                            <div style={{ color: '#a3a3a3', fontSize: '14px', marginBottom: '8px' }}>Remaining</div>
+                            <div style={{ color: '#0ea5e9', fontSize: '24px', fontWeight: '700' }}>$212,500</div>
+                        </div>
+                    </div>
+                    <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(14, 165, 233, 0.1)', border: '1px solid rgba(14, 165, 233, 0.3)', borderRadius: '8px' }}>
+                        <div style={{ color: '#0ea5e9', fontSize: '14px', fontWeight: '600' }}>42.5% Available</div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>TOTAL BENEFICIARIES</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: 'white' }}>1,247</div>
+                    </div>
+                    <div style={{ fontSize: '48px' }}>👥</div>
+                </div>
+
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>LOW STOCK ITEMS</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>3</div>
+                        <div style={{ fontSize: '12px', color: '#f59e0b', marginTop: '4px' }}>Restock required</div>
+                    </div>
+                    <div style={{ fontSize: '48px' }}>⚠️</div>
+                </div>
+
+                <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <div style={{ color: '#a3a3a3', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>UPCOMING MAINTENANCE</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: 'white' }}>5</div>
+                        <div style={{ fontSize: '12px', color: '#a3a3a3', marginTop: '4px' }}>Next 30 days</div>
+                    </div>
+                    <div style={{ fontSize: '48px' }}>🔧</div>
+                </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div style={{ background: 'rgba(26, 26, 26, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '12px', padding: '24px', marginBottom: '30px' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'white', marginBottom: '20px' }}>Quick Actions</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+                    <button style={{ background: '#0ea5e9', color: 'white', fontWeight: '600', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', transition: 'all 0.3s' }}>
+                        Record Transaction
+                    </button>
+                    <button style={{ background: 'transparent', color: '#0ea5e9', fontWeight: '600', padding: '12px 24px', borderRadius: '8px', border: '2px solid #0ea5e9', cursor: 'pointer', transition: 'all 0.3s' }}>
+                        Create Project
+                    </button>
+                    <button style={{ background: 'transparent', color: '#0ea5e9', fontWeight: '600', padding: '12px 24px', borderRadius: '8px', border: '2px solid #0ea5e9', cursor: 'pointer', transition: 'all 0.3s' }}>
+                        Add Asset
+                    </button>
+                    <button style={{ background: 'transparent', color: '#0ea5e9', fontWeight: '600', padding: '12px 24px', borderRadius: '8px', border: '2px solid #0ea5e9', cursor: 'pointer', transition: 'all 0.3s' }}>
+                        Record KPI
+                    </button>
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div style={{ textAlign: 'center', padding: '20px', color: '#666', fontSize: '12px' }}>
+                <p>OpenLedger Black v1.0.0 • All systems operational • Zero external dependencies</p>
+            </div>
+        </div>
     );
 }
