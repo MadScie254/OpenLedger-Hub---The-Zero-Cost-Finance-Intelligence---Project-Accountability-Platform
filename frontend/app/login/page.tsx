@@ -6,11 +6,9 @@
  */
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
 export default function LoginPage() {
-    const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -23,10 +21,10 @@ export default function LoginPage() {
 
         try {
             await api.login({ username, password });
-            router.push('/dashboard');
+            // Force page reload to ensure tokens are picked up
+            window.location.href = '/dashboard';
         } catch (err: any) {
             setError(err.response?.data?.detail || 'Invalid credentials');
-        } finally {
             setLoading(false);
         }
     };
@@ -114,10 +112,10 @@ export default function LoginPage() {
                     <p className="text-xs text-gray-500 text-center mb-3">Demo Credentials:</p>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="bg-black-tertiary px-3 py-2 rounded">
-                            <span className="text-gray-500">Admin:</span> <span className="text-white font-mono">admin</span>
+                            <span className="text-gray-500">User:</span> <span className="text-white font-mono">admin</span>
                         </div>
                         <div className="bg-black-tertiary px-3 py-2 rounded">
-                            <span className="text-gray-500">Pass:</span> <span className="text-white font-mono">OpenLedger2024!</span>
+                            <span className="text-gray-500">Pass:</span> <span className="text-white font-mono">root1234</span>
                         </div>
                     </div>
                 </div>

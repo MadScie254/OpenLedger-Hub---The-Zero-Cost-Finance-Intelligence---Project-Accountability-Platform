@@ -220,44 +220,26 @@ class APIClient {
     }
 
     async getInventory(params?: any) {
-        const response = await this.client.get('/assets/inventory', { params });
-        return response.data;
-    }
-
-    // ========================================================================
-    // IMPACT METRICS
-    // ========================================================================
-
-    async getDashboardStats() {
-        const response = await this.client.get('/impact/dashboard');
-        return response.data;
-    }
-
-    async getKPIs(params?: any) {
-        const response = await this.client.get('/impact/kpis', { params });
-        return response.data;
-    }
-
     async createKPI(data: any) {
-        const response = await this.client.post('/impact/kpis', data);
-        return response.data;
-    }
+            const response = await this.client.post('/impact/kpis', data);
+            return response.data;
+        }
 
     async recordKPIValue(kpiId: number, data: any) {
-        const response = await this.client.post(`/impact/kpis/${kpiId}/record`, data);
-        return response.data;
-    }
+            const response = await this.client.post(`/impact/kpis/${kpiId}/record`, data);
+            return response.data;
+        }
 
-    async getBeneficiaries(params?: any) {
-        const response = await this.client.get('/impact/beneficiaries', { params });
-        return response.data;
-    }
+    async getBeneficiaries(params ?: any) {
+            const response = await this.client.get('/impact/beneficiaries', { params });
+            return response.data;
+        }
 
     async getImpactHeatmap() {
-        const response = await this.client.get('/impact/heatmap');
-        return response.data;
+            const response = await this.client.get('/impact/heatmap');
+            return response.data;
+        }
     }
-}
 
-// Export singleton instance
-export const api = new APIClient();
+    // Export singleton instance
+    export const api = new APIClient();
