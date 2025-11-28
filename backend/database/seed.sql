@@ -67,11 +67,11 @@ SELECT 5, id FROM permissions WHERE action = 'read' AND resource IN ('projects',
 -- ============================================================================
 
 INSERT INTO users (email, username, password_hash, full_name, role_id, is_active) VALUES
-('admin@openledger.org', 'admin', 'aedde8a8fdaf25e8992abbbb52d2cca94a1a8665524c35cddb46d5e148bf7070', 'System Administrator', 1, 1),
-('finance@openledger.org', 'finance_mgr', 'aedde8a8fdaf25e8992abbbb52d2cca94a1a8665524c35cddb46d5e148bf7070', 'Sarah Johnson', 2, 1),
-('projects@openledger.org', 'project_mgr', 'aedde8a8fdaf25e8992abbbb52d2cca94a1a8665524c35cddb46d5e148bf7070', 'Michael Chen', 3, 1),
-('auditor@openledger.org', 'auditor', 'aedde8a8fdaf25e8992abbbb52d2cca94a1a8665524c35cddb46d5e148bf7070', 'Emily Rodriguez', 4, 1),
-('staff@openledger.org', 'staff_user', 'aedde8a8fdaf25e8992abbbb52d2cca94a1a8665524c35cddb46d5e148bf7070', 'David Kimani', 5, 1);
+('admin@openledger.org', 'admin', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'System Administrator', 1, 1),
+('finance@openledger.org', 'finance_mgr', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'Sarah Johnson', 2, 1),
+('projects@openledger.org', 'project_mgr', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'Michael Chen', 3, 1),
+('auditor@openledger.org', 'auditor', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'Emily Rodriguez', 4, 1),
+('staff@openledger.org', 'staff_user', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'David Kimani', 5, 1);
 
 -- ============================================================================
 -- TRANSACTION CATEGORIES
