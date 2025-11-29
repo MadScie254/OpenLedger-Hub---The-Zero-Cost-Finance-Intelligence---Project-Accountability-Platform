@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS users (
     full_name TEXT NOT NULL,
     role_id INTEGER NOT NULL,
     is_active BOOLEAN DEFAULT 1,
+    google_sub VARCHAR(255) UNIQUE,
+    google_picture TEXT,
     last_login TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -46,6 +48,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role_id);
 CREATE INDEX idx_users_active ON users(is_active);
+CREATE INDEX idx_users_google_sub ON users(google_sub);
 
 -- ============================================================================
 -- FINANCE ENGINE - COLD, ACCURATE, UNFORGIVING
