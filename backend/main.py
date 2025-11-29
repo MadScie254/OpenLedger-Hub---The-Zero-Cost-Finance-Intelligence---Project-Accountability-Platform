@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from config import settings
 from database import db, init_db
+from app.core.security import setup_cors, add_security_headers
 
 
 # Initialize database on startup
@@ -41,14 +42,9 @@ app = FastAPI(
 )
 
 
-# CORS Middleware - surgical precision
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Security Middleware
+setup_cors(app)
+add_security_headers(app)
 
 
 # Health check endpoint
@@ -76,10 +72,11 @@ async def health_check():
 
 # Import and register route modules
 from routes import auth, finance, projects, assets, impact
-from app.routes import auth_google
+from app.routes import auth_google, analytics
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(auth_google.router, tags=["Google OAuth"])
+app.include_router(analytics.router, tags=["Analytics"])
 app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(assets.router, prefix="/api/assets", tags=["Assets"])
