@@ -219,27 +219,26 @@ class APIClient {
         return response.data;
     }
 
-    async getInventory(params?: any) {
     async createKPI(data: any) {
-            const response = await this.client.post('/impact/kpis', data);
-            return response.data;
-        }
-
-    async recordKPIValue(kpiId: number, data: any) {
-            const response = await this.client.post(`/impact/kpis/${kpiId}/record`, data);
-            return response.data;
-        }
-
-    async getBeneficiaries(params ?: any) {
-            const response = await this.client.get('/impact/beneficiaries', { params });
-            return response.data;
-        }
-
-    async getImpactHeatmap() {
-            const response = await this.client.get('/impact/heatmap');
-            return response.data;
-        }
+        const response = await this.client.post('/impact/kpis', data);
+        return response.data;
     }
 
-    // Export singleton instance
-    export const api = new APIClient();
+    async recordKPIValue(kpiId: number, data: any) {
+        const response = await this.client.post(`/impact/kpis/${kpiId}/record`, data);
+        return response.data;
+    }
+
+    async getBeneficiaries(params?: any) {
+        const response = await this.client.get('/impact/beneficiaries', { params });
+        return response.data;
+    }
+
+    async getImpactHeatmap() {
+        const response = await this.client.get('/impact/heatmap');
+        return response.data;
+    }
+}
+
+// Export singleton instance
+export const api = new APIClient();
