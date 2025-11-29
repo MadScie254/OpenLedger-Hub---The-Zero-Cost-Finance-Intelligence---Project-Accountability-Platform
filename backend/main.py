@@ -72,11 +72,12 @@ async def health_check():
 
 # Import and register route modules
 from routes import auth, finance, projects, assets, impact
-from app.routes import auth_google, analytics
+from app.routes import auth_google, analytics, external_data
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(auth_google.router, tags=["Google OAuth"])
 app.include_router(analytics.router, tags=["Analytics"])
+app.include_router(external_data.router, tags=["External Data"])
 app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(assets.router, prefix="/api/assets", tags=["Assets"])

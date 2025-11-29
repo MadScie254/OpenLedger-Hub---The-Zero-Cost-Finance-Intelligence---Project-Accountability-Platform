@@ -11,11 +11,12 @@ import os
 def init_database():
     """Initialize database with schema and seed data"""
     
-    # Paths
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    db_path = os.path.join(base_dir, '..', 'openledger.db')
-    schema_path = os.path.join(base_dir, '..', 'database', 'schema.sql')
-    seed_path = os.path.join(base_dir, '..', 'database', 'seed.sql')
+    # Paths - use absolute path from script location
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    backend_dir = os.path.dirname(script_dir)  # backend/
+    db_path = os.path.join(backend_dir, 'openledger.db')
+    schema_path = os.path.join(backend_dir, 'database', 'schema.sql')
+    seed_path = os.path.join(backend_dir, 'database', 'seed.sql')
     
     print("=" * 60)
     print("OpenLedger Black - Database Initialization")
