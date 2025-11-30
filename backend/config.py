@@ -1,6 +1,6 @@
 """
-OpenLedger Black - Configuration Management
-Enterprise-grade configuration with environment variable support
+OpenLedger Hub - Configuration Management
+Simple configuration for open-access platform
 """
 
 from pydantic_settings import BaseSettings
@@ -12,22 +12,16 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # Application
-    APP_NAME: str = "OpenLedger Black"
-    APP_VERSION: str = "1.0.0"
+    APP_NAME: str = "OpenLedger Hub"
+    APP_VERSION: str = "2.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     
     # Database
     DATABASE_URL: str = "sqlite:///./openledger.db"
     
-    # Security
-    SECRET_KEY: str
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001"
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:3002"
     
     # File Upload
     UPLOAD_DIR: str = "./uploads"
@@ -37,16 +31,8 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: int = 50
     MAX_PAGE_SIZE: int = 200
     
-    # Google OAuth
-    GOOGLE_CLIENT_ID: str = ""
-    
-    # JWT Configuration
-    JWT_SECRET: str = "changeme-in-production"
-    JWT_ALGO: str = "HS256"
-    JWT_EXPIRES_SECONDS: int = 3600
-    
     # Frontend URL for CORS
-    FRONTEND_URL: str = "http://localhost:3001"
+    FRONTEND_URL: str = "http://localhost:3000"
     
     @property
     def cors_origins(self) -> List[str]:

@@ -1,57 +1,10 @@
--- OpenLedger Black - Enterprise SQLite Schema
--- Zero-cost, military-grade database architecture
--- Built for absolute precision and accountability
+-- OpenLedger Hub - Open Access SQLite Schema
+-- Zero-cost, collaborative database architecture
+-- Built for transparency and community accountability
+-- NO AUTHENTICATION - Open access for all
 
 -- ============================================================================
--- CORE AUTHENTICATION & AUTHORIZATION
--- ============================================================================
-
-CREATE TABLE IF NOT EXISTS roles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS permissions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
-    resource TEXT NOT NULL,
-    action TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS role_permissions (
-    role_id INTEGER NOT NULL,
-    permission_id INTEGER NOT NULL,
-    PRIMARY KEY (role_id, permission_id),
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
-    FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
-    username TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    full_name TEXT NOT NULL,
-    role_id INTEGER NOT NULL,
-    is_active BOOLEAN DEFAULT 1,
-    google_sub VARCHAR(255) UNIQUE,
-    google_picture TEXT,
-    last_login TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (role_id) REFERENCES roles(id)
-);
-
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role_id);
-CREATE INDEX idx_users_active ON users(is_active);
-CREATE INDEX idx_users_google_sub ON users(google_sub);
-
--- ============================================================================
--- FINANCE ENGINE - COLD, ACCURATE, UNFORGIVING
+-- FINANCE ENGINE - TRANSPARENT FINANCIAL TRACKING
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS transaction_categories (
@@ -70,7 +23,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     description TEXT NOT NULL,
     reference_number TEXT UNIQUE,
     date DATE NOT NULL,
-    created_by INTEGER NOT NULL,
     project_id INTEGER,
     attachment_path TEXT,
     is_recurring BOOLEAN DEFAULT 0,
@@ -79,7 +31,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES transaction_categories(id),
-    FOREIGN KEY (created_by) REFERENCES users(id),
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
@@ -87,7 +38,6 @@ CREATE INDEX idx_transactions_type ON transactions(transaction_type);
 CREATE INDEX idx_transactions_date ON transactions(date);
 CREATE INDEX idx_transactions_category ON transactions(category_id);
 CREATE INDEX idx_transactions_project ON transactions(project_id);
-CREATE INDEX idx_transactions_created_by ON transactions(created_by);
 
 CREATE TABLE IF NOT EXISTS budgets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -98,10 +48,8 @@ CREATE TABLE IF NOT EXISTS budgets (
     end_date DATE NOT NULL,
     total_amount REAL NOT NULL CHECK(total_amount > 0),
     status TEXT DEFAULT 'active' CHECK(status IN ('draft', 'active', 'closed')),
-    created_by INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_budgets_fiscal_year ON budgets(fiscal_year);
@@ -139,7 +87,7 @@ CREATE TABLE IF NOT EXISTS cashflow_snapshots (
 CREATE INDEX idx_cashflow_date ON cashflow_snapshots(snapshot_date);
 
 -- ============================================================================
--- PROJECT INTELLIGENCE SYSTEM - COMPLIANCE OFFICER IN CODE
+-- PROJECT INTELLIGENCE SYSTEM - COLLABORATIVE PROJECT TRACKING
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS projects (
@@ -153,17 +101,13 @@ CREATE TABLE IF NOT EXISTS projects (
     total_budget REAL NOT NULL CHECK(total_budget >= 0),
     spent_amount REAL DEFAULT 0,
     donor_name TEXT,
-    project_manager_id INTEGER,
-    created_by INTEGER NOT NULL,
+    project_manager_name TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (project_manager_id) REFERENCES users(id),
-    FOREIGN KEY (created_by) REFERENCES users(id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_projects_code ON projects(code);
 CREATE INDEX idx_projects_status ON projects(status);
-CREATE INDEX idx_projects_manager ON projects(project_manager_id);
 
 CREATE TABLE IF NOT EXISTS milestones (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -191,18 +135,16 @@ CREATE TABLE IF NOT EXISTS deliverables (
     due_date DATE NOT NULL,
     delivered_date DATE,
     status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'in_progress', 'delivered', 'approved', 'rejected')),
-    assigned_to INTEGER,
+    assigned_to_name TEXT,
     attachment_path TEXT,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE,
-    FOREIGN KEY (assigned_to) REFERENCES users(id)
+    FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_deliverables_milestone ON deliverables(milestone_id);
 CREATE INDEX idx_deliverables_status ON deliverables(status);
-CREATE INDEX idx_deliverables_assigned ON deliverables(assigned_to);
 
 CREATE TABLE IF NOT EXISTS project_documents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -211,18 +153,17 @@ CREATE TABLE IF NOT EXISTS project_documents (
     file_name TEXT NOT NULL,
     file_path TEXT NOT NULL,
     file_size INTEGER,
-    uploaded_by INTEGER NOT NULL,
+    uploaded_by_name TEXT,
     description TEXT,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-    FOREIGN KEY (uploaded_by) REFERENCES users(id)
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_project_documents_project ON project_documents(project_id);
 CREATE INDEX idx_project_documents_type ON project_documents(document_type);
 
 -- ============================================================================
--- ASSET & INVENTORY COMMAND CENTER - OPERATIONS WAR ROOM
+-- ASSET & INVENTORY COMMAND CENTER - RESOURCE ACCOUNTABILITY
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS asset_categories (
@@ -260,19 +201,17 @@ CREATE INDEX idx_assets_status ON assets(status);
 CREATE TABLE IF NOT EXISTS asset_assignments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     asset_id INTEGER NOT NULL,
-    assigned_to_type TEXT NOT NULL CHECK(assigned_to_type IN ('user', 'project')),
-    assigned_to_id INTEGER NOT NULL,
+    assigned_to_type TEXT NOT NULL CHECK(assigned_to_type IN ('person', 'project')),
+    assigned_to_name TEXT NOT NULL,
     assigned_date DATE NOT NULL,
     return_date DATE,
-    assigned_by INTEGER NOT NULL,
+    assigned_by_name TEXT,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE,
-    FOREIGN KEY (assigned_by) REFERENCES users(id)
+    FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_asset_assignments_asset ON asset_assignments(asset_id);
-CREATE INDEX idx_asset_assignments_type_id ON asset_assignments(assigned_to_type, assigned_to_id);
 
 CREATE TABLE IF NOT EXISTS maintenance_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -322,17 +261,16 @@ CREATE TABLE IF NOT EXISTS inventory_movements (
     reference_number TEXT,
     movement_date DATE NOT NULL,
     reason TEXT,
-    performed_by INTEGER NOT NULL,
+    performed_by_name TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES inventory_items(id) ON DELETE CASCADE,
-    FOREIGN KEY (performed_by) REFERENCES users(id)
+    FOREIGN KEY (item_id) REFERENCES inventory_items(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_inventory_movements_item ON inventory_movements(item_id);
 CREATE INDEX idx_inventory_movements_date ON inventory_movements(movement_date);
 
 -- ============================================================================
--- IMPACT METRICS CORTEX - PR + RESULTS PROOF MACHINE
+-- IMPACT METRICS CORTEX - COMMUNITY IMPACT TRACKING
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS kpi_categories (
@@ -352,11 +290,9 @@ CREATE TABLE IF NOT EXISTS kpis (
     frequency TEXT NOT NULL CHECK(frequency IN ('daily', 'weekly', 'monthly', 'quarterly', 'yearly', 'one_time')),
     calculation_method TEXT,
     is_cumulative BOOLEAN DEFAULT 0,
-    created_by INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES kpi_categories(id),
-    FOREIGN KEY (created_by) REFERENCES users(id)
+    FOREIGN KEY (category_id) REFERENCES kpi_categories(id)
 );
 
 CREATE INDEX idx_kpis_category ON kpis(category_id);
@@ -369,11 +305,10 @@ CREATE TABLE IF NOT EXISTS kpi_values (
     recorded_date DATE NOT NULL,
     project_id INTEGER,
     notes TEXT,
-    recorded_by INTEGER NOT NULL,
+    recorded_by_name TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (kpi_id) REFERENCES kpis(id) ON DELETE CASCADE,
-    FOREIGN KEY (project_id) REFERENCES projects(id),
-    FOREIGN KEY (recorded_by) REFERENCES users(id)
+    FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
 CREATE INDEX idx_kpi_values_kpi ON kpi_values(kpi_id);
@@ -408,38 +343,15 @@ CREATE TABLE IF NOT EXISTS impact_reports (
     project_id INTEGER,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
-    generated_by INTEGER NOT NULL,
+    generated_by_name TEXT,
     file_path TEXT,
     summary TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (project_id) REFERENCES projects(id),
-    FOREIGN KEY (generated_by) REFERENCES users(id)
+    FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
 CREATE INDEX idx_impact_reports_project ON impact_reports(project_id);
 CREATE INDEX idx_impact_reports_type ON impact_reports(report_type);
-
--- ============================================================================
--- AUDIT TRAIL - IMMUTABLE ACCOUNTABILITY
--- ============================================================================
-
-CREATE TABLE IF NOT EXISTS audit_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    action TEXT NOT NULL,
-    resource_type TEXT NOT NULL,
-    resource_id INTEGER,
-    old_values TEXT,
-    new_values TEXT,
-    ip_address TEXT,
-    user_agent TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE INDEX idx_audit_user ON audit_logs(user_id);
-CREATE INDEX idx_audit_resource ON audit_logs(resource_type, resource_id);
-CREATE INDEX idx_audit_created ON audit_logs(created_at);
 
 -- ============================================================================
 -- DATABASE METADATA
@@ -451,4 +363,4 @@ CREATE TABLE IF NOT EXISTS schema_version (
     description TEXT
 );
 
-INSERT INTO schema_version (version, description) VALUES ('1.0.0', 'Initial OpenLedger Black schema');
+INSERT INTO schema_version (version, description) VALUES ('2.0.0', 'OpenLedger Hub - Open Access (No Authentication)');
