@@ -16,7 +16,7 @@ from models import (
     InventoryItemResponse,
     UserResponse
 )
-from auth import get_current_user, create_permission_dependency, log_audit
+# Auth removed - open access
 
 
 router = APIRouter()
@@ -29,8 +29,7 @@ router = APIRouter()
 @router.post("", response_model=AssetResponse, status_code=status.HTTP_201_CREATED)
 async def create_asset(
     asset: AssetCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.create"))
+    db: Database = Depends(get_db)
 ):
     """Create a new asset"""
     
@@ -62,8 +61,7 @@ async def create_asset(
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "assets", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one(
         """
@@ -84,8 +82,7 @@ async def list_assets(
     category_id: Optional[int] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.view"))
+    db: Database = Depends(get_db)
 ):
     """List assets with filters"""
     
@@ -120,8 +117,7 @@ async def list_assets(
 @router.get("/{asset_id}", response_model=AssetResponse)
 async def get_asset(
     asset_id: int,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.view"))
+    db: Database = Depends(get_db)
 ):
     """Get asset details"""
     
@@ -145,8 +141,7 @@ async def get_asset(
 async def update_asset(
     asset_id: int,
     updates: AssetUpdate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.update"))
+    db: Database = Depends(get_db)
 ):
     """Update asset details"""
     
@@ -183,8 +178,7 @@ async def update_asset(
         tuple(params)
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "UPDATE", "assets", asset_id)
+    # Audit removed
     
     return await get_asset(asset_id, db, current_user)
 
@@ -195,8 +189,7 @@ async def assign_asset(
     assigned_to_type: str = Query(..., regex="^(user|project)$"),
     assigned_to_id: int = Query(...),
     notes: Optional[str] = None,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.update"))
+    db: Database = Depends(get_db)
 ):
     """Assign asset to a user or project"""
     
@@ -213,11 +206,10 @@ async def assign_asset(
         (asset_id, assigned_to_type, assigned_to_id, assigned_date, assigned_by, notes)
         VALUES (?, ?, ?, ?, ?, ?)
         """,
-        (asset_id, assigned_to_type, assigned_to_id, date.today(), current_user.id, notes)
+        (asset_id, assigned_to_type, assigned_to_id, date.today(), "system", notes)
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "ASSIGN", "asset_assignments", cursor.lastrowid)
+    # Audit removed
     
     return {
         "message": "Asset assigned successfully",
@@ -229,8 +221,7 @@ async def assign_asset(
 async def log_maintenance(
     asset_id: int,
     maintenance: MaintenanceLogCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.update"))
+    db: Database = Depends(get_db)
 ):
     """Log maintenance activity for an asset"""
     
@@ -257,8 +248,7 @@ async def log_maintenance(
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "maintenance_logs", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one("SELECT * FROM maintenance_logs WHERE id = ?", (cursor.lastrowid,))
     return MaintenanceLogResponse(**created)
@@ -267,8 +257,7 @@ async def log_maintenance(
 @router.get("/{asset_id}/maintenance", response_model=List[MaintenanceLogResponse])
 async def list_maintenance_logs(
     asset_id: int,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.view"))
+    db: Database = Depends(get_db)
 ):
     """List maintenance logs for an asset"""
     
@@ -291,8 +280,7 @@ async def list_maintenance_logs(
 @router.post("/inventory", response_model=InventoryItemResponse, status_code=status.HTTP_201_CREATED)
 async def create_inventory_item(
     item: InventoryItemCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.create"))
+    db: Database = Depends(get_db)
 ):
     """Create a new inventory item"""
     
@@ -328,8 +316,7 @@ async def create_inventory_item(
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "inventory_items", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one("SELECT * FROM inventory_items WHERE id= ?", (cursor.lastrowid,))
     created_dict = dict(created)
@@ -341,8 +328,7 @@ async def create_inventory_item(
 @router.get("/inventory", response_model=List[InventoryItemResponse])
 async def list_inventory(
     low_stock_only: bool = False,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("assets.view"))
+    db: Database = Depends(get_db)
 ):
     """List inventory items with low stock warnings"""
     

@@ -15,7 +15,7 @@ from models import (
     MilestoneResponse,
     UserResponse
 )
-from auth import get_current_user, create_permission_dependency, log_audit
+# Auth removed - open access
 import os
 from config import settings
 
@@ -26,8 +26,7 @@ router = APIRouter()
 @router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project: ProjectCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.create"))
+    db: Database = Depends(get_db)
 ):
     """Create a new project"""
     
@@ -55,12 +54,11 @@ async def create_project(
             project.total_budget,
             project.donor_name,
             project.project_manager_id,
-            current_user.id
+            "system"
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "projects", cursor.lastrowid)
+    # Audit removed
     
     # Fetch created project with manager name
     created = await db.fetch_one(
@@ -88,8 +86,7 @@ async def list_projects(
     status: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.view"))
+    db: Database = Depends(get_db)
 ):
     """List all projects with filters"""
     
@@ -127,8 +124,7 @@ async def list_projects(
 @router.get("/{project_id}", response_model=ProjectResponse)
 async def get_project(
     project_id: int,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.view"))
+    db: Database = Depends(get_db)
 ):
     """Get project details"""
     
@@ -159,8 +155,7 @@ async def get_project(
 async def update_project(
     project_id: int,
     updates: ProjectUpdate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.update"))
+    db: Database = Depends(get_db)
 ):
     """Update project details"""
     
@@ -198,8 +193,7 @@ async def update_project(
         tuple(params)
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "UPDATE", "projects", project_id)
+    # Audit removed
     
     # Return updated project
     return await get_project(project_id, db, current_user)
@@ -209,8 +203,7 @@ async def update_project(
 async def create_milestone(
     project_id: int,
     milestone: MilestoneCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.create"))
+    db: Database = Depends(get_db)
 ):
     """Create a milestone for a project"""
     
@@ -234,8 +227,7 @@ async def create_milestone(
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "milestones", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one("SELECT * FROM milestones WHERE id = ?", (cursor.lastrowid,))
     return MilestoneResponse(**created)
@@ -244,8 +236,7 @@ async def create_milestone(
 @router.get("/{project_id}/milestones", response_model=List[MilestoneResponse])
 async def list_milestones(
     project_id: int,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.view"))
+    db: Database = Depends(get_db)
 ):
     """List all milestones for a project"""
     
@@ -267,8 +258,7 @@ async def upload_document(
     file: UploadFile = File(...),
     document_type: str = Query("other"),
     description: Optional[str] = None,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.update"))
+    db: Database = Depends(get_db)
 ):
     """Upload a document (receipt, report, etc.) for a project"""
     
@@ -301,13 +291,12 @@ async def upload_document(
             file.filename,
             file_path,
             len(content),
-            current_user.id,
+            "system",
             description
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "UPLOAD", "project_documents", cursor.lastrowid)
+    # Audit removed
     
     return {
         "message": "Document uploaded successfully",
@@ -320,8 +309,7 @@ async def upload_document(
 @router.get("/{project_id}/report")
 async def generate_project_report(
     project_id: int,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.view"))
+    db: Database = Depends(get_db)
 ):
     """Generate donor report for a project"""
     

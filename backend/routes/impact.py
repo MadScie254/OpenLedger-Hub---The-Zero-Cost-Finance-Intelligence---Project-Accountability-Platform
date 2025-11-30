@@ -17,7 +17,7 @@ from models import (
     DashboardStats,
     UserResponse
 )
-from auth import get_current_user, create_permission_dependency, log_audit
+# Auth removed - open access
 
 
 router = APIRouter()
@@ -30,8 +30,7 @@ router = APIRouter()
 @router.post("/kpis", response_model=KPIResponse, status_code=status.HTTP_201_CREATED)
 async def create_kpi(
     kpi: KPICreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.create"))
+    db: Database = Depends(get_db)
 ):
     """Create a custom KPI"""
     
@@ -48,12 +47,11 @@ async def create_kpi(
             kpi.measurement_unit,
             kpi.target_value,
             kpi.frequency,
-            current_user.id
+            "system"
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "kpis", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one(
         """
@@ -75,8 +73,7 @@ async def create_kpi(
 @router.get("/kpis", response_model=List[KPIResponse])
 async def list_kpis(
     category_id: Optional[int] = None,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.view"))
+    db: Database = Depends(get_db)
 ):
     """List all KPIs with current values and achievement rates"""
     
@@ -124,8 +121,7 @@ async def list_kpis(
 async def record_kpi_value(
     kpi_id: int,
     value: KPIValueCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.create"))
+    db: Database = Depends(get_db)
 ):
     """Record a value for a KPI"""
     
@@ -150,12 +146,11 @@ async def record_kpi_value(
             value.recorded_date,
             value.project_id,
             value.notes,
-            current_user.id
+            "system"
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "kpi_values", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one("SELECT * FROM kpi_values WHERE id = ?", (cursor.lastrowid,))
     return KPIValueResponse(**created)
@@ -166,8 +161,7 @@ async def list_kpi_values(
     kpi_id: int,
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.view"))
+    db: Database = Depends(get_db)
 ):
     """List recorded values for a KPI"""
     
@@ -203,8 +197,7 @@ async def list_kpi_values(
 @router.post("/beneficiaries", response_model=BeneficiaryResponse, status_code=status.HTTP_201_CREATED)
 async def create_beneficiary(
     beneficiary: BeneficiaryCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.create"))
+    db: Database = Depends(get_db)
 ):
     """Register a new beneficiary"""
     
@@ -226,8 +219,7 @@ async def create_beneficiary(
         )
     )
     await db.commit()
-    
-    await log_audit(db, current_user.id, "CREATE", "beneficiaries", cursor.lastrowid)
+    # Audit removed
     
     created = await db.fetch_one("SELECT * FROM beneficiaries WHERE id = ?", (cursor.lastrowid,))
     return BeneficiaryResponse(**created)
@@ -239,8 +231,7 @@ async def list_beneficiaries(
     status: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.view"))
+    db: Database = Depends(get_db)
 ):
     """List beneficiaries with filters"""
     
@@ -276,8 +267,7 @@ async def list_beneficiaries(
 
 @router.get("/dashboard", response_model=DashboardStats)
 async def get_dashboard_stats(
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.view"))
+    db: Database = Depends(get_db)
 ):
     """Get overall dashboard statistics"""
     
@@ -362,8 +352,7 @@ async def get_dashboard_stats(
 
 @router.get("/heatmap")
 async def get_impact_heatmap(
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("impact.view"))
+    db: Database = Depends(get_db)
 ):
     """Get impact heatmap data for visualization"""
     
