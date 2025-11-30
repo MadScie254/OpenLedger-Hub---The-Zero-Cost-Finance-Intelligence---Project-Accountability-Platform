@@ -32,19 +32,6 @@ def setup_cors(app):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allowed_origins,
-        allow_credentials=True,  # Required for cookies
-        allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
-        allow_headers=["*"],
-        expose_headers=["*"],
-    )
-    
-    print(f"🔒 CORS configured for origins: {allowed_origins}")
-
-
-def rate_limit(max_requests: int = 10, window_seconds: int = 60):
-    """
-    Rate limiting decorator for FastAPI routes.
-    
     Limits requests per IP address within a time window.
     
     Args:
