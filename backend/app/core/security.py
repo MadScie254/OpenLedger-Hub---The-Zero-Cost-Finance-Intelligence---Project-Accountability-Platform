@@ -32,17 +32,24 @@ def setup_cors(app):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allowed_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+    )
+    
+    print(f"[CORS] Configured for origins: {allowed_origins}")
+
+
+def rate_limit(max_requests: int = 10, window_seconds: int = 60):
+    """
+    Rate limiting decorator for FastAPI routes.
+    
     Limits requests per IP address within a time window.
     
     Args:
         max_requests: Maximum number of requests allowed
         window_seconds: Time window in seconds
-        
-    Usage:
-        @router.post("/api/auth/google")
-        @rate_limit(max_requests=10, window_seconds=60)
-        async def google_signin(...):
-            ...
     """
     def decorator(func: Callable):
         @wraps(func)
@@ -102,31 +109,4 @@ def add_security_headers(app):
         
         return response
     
-    print("🛡️  Security headers middleware enabled")
-
-
-class CSRFProtection:
-    """
-    CSRF protection for state-changing requests.
-    
-    Validates that requests with cookies also have valid CSRF tokens.
-    """
-    
-    @staticmethod
-    def generate_token() -> str:
-        """Generate a CSRF token"""
-        import secrets
-        return secrets.token_urlsafe(32)
-    
-    @staticmethod
-    def validate_token(request: Request, token: str) -> bool:
-        """Validate CSRF token from request"""
-        # Get token from header
-        header_token = request.headers.get("X-CSRF-Token")
-        
-        if not header_token:
-            return False
-        
-        # Constant-time comparison
-        import hmac
-        return hmac.compare_digest(header_token, token)
+    print("[Security] Headers middleware enabled")

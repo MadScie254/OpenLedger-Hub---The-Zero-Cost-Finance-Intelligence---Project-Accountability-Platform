@@ -12,24 +12,6 @@ from database import db, init_db
 from app.core.security import setup_cors, add_security_headers
 
 
-# Initialize database on startup
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager"""
-    # Startup
-    print("🚀 Starting OpenLedger Hub...")
-    init_db()
-    await db.connect()
-    print(f"✅ Database connected: {settings.database_path}")
-    print(f"🌍 CORS enabled for: {settings.cors_origins}")
-    print(f"🔓 Open Access - No Authentication Required")
-    
-    yield
-    
-    # Shutdown
-    await db.disconnect()
-    print("👋 Shutting down OpenLedger Hub")
-
 
 # Create FastAPI application
 app = FastAPI(
