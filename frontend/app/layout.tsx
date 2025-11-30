@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "OpenLedger Black - Enterprise Finance Intelligence",
-    description: "Zero-cost, SQLite-powered, enterprise-grade finance & project intelligence platform",
+    title: "OpenLedger Hub - Open Access Finance Intelligence",
+    description: "Zero-cost, open-access finance & project intelligence platform",
 };
 
 export default function RootLayout({
@@ -13,7 +14,11 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body>{children}</body>
+            <body>
+                <ThemeProvider>
+                    {children}
+                </ThemeProvider>
+            </body>
         </html>
     );
 }

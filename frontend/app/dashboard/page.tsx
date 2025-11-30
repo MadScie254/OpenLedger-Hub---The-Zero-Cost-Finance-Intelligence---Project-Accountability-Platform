@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from '@/context/ThemeContext';
 import { Icons } from '@/components/Icons';
 import GlobalContextTab from '@/components/tabs/GlobalContextTab';
 import MarketIntelligenceTab from '@/components/tabs/MarketIntelligenceTab';
@@ -23,6 +24,7 @@ const TABS = [
 ];
 
 export default function DashboardPage() {
+    const { theme, toggleTheme } = useTheme();
     const [activeTab, setActiveTab] = useState('global');
     const API_URL = 'http://localhost:8000/api';
 
@@ -57,6 +59,13 @@ export default function DashboardPage() {
                             </span>
                             Systems Operational
                         </div>
+                        <button
+                            onClick={toggleTheme}
+                            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-400 transition hover:bg-white/10 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                        >
+                            {theme === 'dark' ? <Icons.Sun className="h-4 w-4" /> : <Icons.Moon className="h-4 w-4" />}
+                        </button>
                         <button className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-400 transition hover:bg-white/10 hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                             <Icons.Bell />
                         </button>
@@ -77,8 +86,8 @@ export default function DashboardPage() {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`group flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-all ${activeTab === tab.id
-                                    ? 'border-sky-500 text-sky-500 drop-shadow-[0_0_8px_rgba(14,165,233,0.5)]'
-                                    : 'border-transparent text-neutral-400 hover:border-white/20 hover:text-white'
+                                ? 'border-sky-500 text-sky-500 drop-shadow-[0_0_8px_rgba(14,165,233,0.5)]'
+                                : 'border-transparent text-neutral-400 hover:border-white/20 hover:text-white'
                                 }`}
                         >
                             <span className={`transition-transform duration-300 ${activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'}`}>
