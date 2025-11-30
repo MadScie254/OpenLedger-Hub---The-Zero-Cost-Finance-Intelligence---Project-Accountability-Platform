@@ -18,7 +18,7 @@ from models import (
     FinancialAnalytics,
     UserResponse
 )
-from auth import get_current_user, create_permission_dependency, log_audit
+# Auth removed - open access platform
 
 
 router = APIRouter()
