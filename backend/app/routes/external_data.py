@@ -1,6 +1,20 @@
 """
 External Data API Routes
-Endpoints for free external APIs (currency, crypto, weather, geocoding, macro data).
+Endpoints for 13+ free external APIs - no signup required!
+
+APIs Available:
+1. Currency Exchange Rates
+2. Cryptocurrency Prices
+3. Weather Data
+4. Geocoding
+5. Macro Economic Indicators
+6. Country Information
+7. Public Holidays
+8. Book/Resource Search
+9. Random User/Beneficiary Generator
+10. Air Quality Data
+11. IP Geolocation
+12. Carbon Footprint Calculator
 """
 
 from fastapi import APIRouter, HTTPException, status, Query
@@ -11,7 +25,15 @@ from ..services.external_apis import (
     get_crypto_price,
     get_weather,
     geocode_address,
-    get_macro_indicator
+    get_macro_indicator,
+    get_country_info,
+    get_public_holidays,
+    get_book_info,
+    search_books,
+    generate_random_users,
+    get_air_quality,
+    get_ip_geolocation,
+    calculate_carbon_footprint
 )
 
 router = APIRouter(prefix="/api/external", tags=["external-data"])
@@ -28,10 +50,10 @@ async def fetch_exchange_rates(
     Source: exchangerate.host (free, no API key required)
     Cache: 1 hour
     
-    Example: `/api/external/exchange-rates?base=USD&symbols=KES,EUR,GBP`
+    Example: `/api/external/exchange-rates?base=USD&symbols=KES,EUR,GBP,NGN`
     """
     try:
-        symbol_list = symbols.split(",") if symbols else ["KES", "EUR", "GBP"]
+        symbol_list = symbols.split(",") if symbols else ["KES", "EUR", "GBP", "NGN", "TZS", "UGX"]
         rates = await get_exchange_rates(base, symbol_list)
         
         return {
@@ -199,4 +221,293 @@ async def fetch_macro_indicator(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to fetch macro indicator: {str(e)}"
+        )
+
+
+# ============================================================================
+# NEW API ENDPOINTS
+# ============================================================================
+
+@router.get("/countries/{country_name}")
+async def fetch_country_info(country_name: str):
+    """
+    Get comprehensive country information.
+    
+    Source: REST Countries API (free, no API key required)
+    Cache: 7 days
+    
+    Example: `/api/external/countries/Kenya`
+    """
+    try:
+        info = await get_country_info(country_name)
+        
+        if info is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Country '{country_name}' not found"
+            )
+        
+        return {
+            "country": info,
+            "source": "restcountries.com"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch country info: {str(e)}"
+        )
+
+
+@router.get("/holidays/{country_code}/{year}")
+async def fetch_public_holidays(
+    country_code: str,
+    year: int
+):
+    """
+    Get public holidays for a country and year.
+    
+    Source: Nager.Date API (free, no API key required)
+    Cache: 24 hours
+    
+    Example: `/api/external/holidays/KE/2024`
+    """
+    try:
+        holidays = await get_public_holidays(country_code, year)
+        
+        if holidays is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No holidays found for {country_code}/{year}"
+            )
+        
+        return {
+            "country_code": country_code,
+            "year": year,
+            "holidays": holidays,
+            "count": len(holidays),
+            "source": "date.nager.at"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch holidays: {str(e)}"
+        )
+
+
+@router.get("/books/isbn/{isbn}")
+async def fetch_book_by_isbn(isbn: str):
+    """
+    Get book information by ISBN.
+    
+    Source: OpenLibrary API (free, no API key required)
+    Cache: 7 days
+    
+    Example: `/api/external/books/isbn/9780140328721`
+    """
+    try:
+        book = await get_book_info(isbn)
+        
+        if book is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Book with ISBN '{isbn}' not found"
+            )
+        
+        return {
+            "book": book,
+            "source": "openlibrary.org"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch book: {str(e)}"
+        )
+
+
+@router.get("/books/search")
+async def search_for_books(
+    q: str = Query(..., description="Search query"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum results")
+):
+    """
+    Search for books and resources.
+    
+    Source: OpenLibrary API (free, no API key required)
+    Cache: 1 hour
+    
+    Example: `/api/external/books/search?q=agriculture&limit=10`
+    """
+    try:
+        books = await search_books(q, limit)
+        
+        if books is None or len(books) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No books found for query: {q}"
+            )
+        
+        return {
+            "query": q,
+            "results": books,
+            "count": len(books),
+            "source": "openlibrary.org"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to search books: {str(e)}"
+        )
+
+
+@router.get("/demo/users")
+async def generate_demo_users(
+    count: int = Query(10, ge=1, le=100, description="Number of users"),
+    nationality: str = Query("us", description="Nationality code (us, gb, ke, ng, etc.)")
+):
+    """
+    Generate random beneficiary/user profiles for demos.
+    
+    Source: RandomUser API (free, no API key required)
+    Cache: 1 hour (per day)
+    
+    Example: `/api/external/demo/users?count=5&nationality=ke`
+    """
+    try:
+        users = await generate_random_users(count, nationality)
+        
+        if users is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to generate demo users"
+            )
+        
+        return {
+            "users": users,
+            "count": len(users),
+            "nationality": nationality,
+            "source": "randomuser.me"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate users: {str(e)}"
+        )
+
+
+@router.get("/air-quality/{country_code}")
+async def fetch_air_quality(
+    country_code: str,
+    limit: int = Query(10, ge=1, le=100, description="Maximum results")
+):
+    """
+    Get air quality measurements for a country.
+    
+    Source: OpenAQ API (free, no API key required)
+    Cache: 30 minutes
+    
+    Example: `/api/external/air-quality/KE?limit=5`
+    """
+    try:
+        data = await get_air_quality(country_code, limit)
+        
+        if data is None or len(data) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No air quality data found for {country_code}"
+            )
+        
+        return {
+            "country_code": country_code,
+            "measurements": data,
+            "count": len(data),
+            "source": "openaq.org"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch air quality: {str(e)}"
+        )
+
+
+@router.get("/geolocation")
+async def fetch_geolocation():
+    """
+    Get geolocation based on IP address.
+    
+    Source: ipapi.co (free, no API key required)
+    Cache: 1 hour
+    
+    Example: `/api/external/geolocation`
+    """
+    try:
+        location = await get_ip_geolocation()
+        
+        if location is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to get geolocation"
+            )
+        
+        return {
+            "location": location,
+            "source": "ipapi.co"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch geolocation: {str(e)}"
+        )
+
+
+@router.post("/carbon-footprint")
+async def calculate_carbon(
+    electricity_kwh: float = Query(0, ge=0, description="Electricity in kWh"),
+    natural_gas_therms: float = Query(0, ge=0, description="Natural gas in therms"),
+    fuel_liters: float = Query(0, ge=0, description="Fuel in liters"),
+    flights_km: float = Query(0, ge=0, description="Flights in kilometers")
+):
+    """
+    Calculate carbon footprint based on consumption.
+    
+    Uses standard EPA/DEFRA emission factors.
+    No external API - calculated locally.
+    
+    Example: `/api/external/carbon-footprint?electricity_kwh=1000&fuel_liters=50&flights_km=5000`
+    """
+    try:
+        result = calculate_carbon_footprint(
+            electricity_kwh=electricity_kwh,
+            natural_gas_therms=natural_gas_therms,
+            fuel_liters=fuel_liters,
+            flights_km=flights_km
+        )
+        
+        return {
+            "footprint": result,
+            "inputs": {
+                "electricity_kwh": electricity_kwh,
+                "natural_gas_therms": natural_gas_therms,
+                "fuel_liters": fuel_liters,
+                "flights_km": flights_km
+            },
+            "source": "local_calculation"
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to calculate carbon footprint: {str(e)}"
         )
