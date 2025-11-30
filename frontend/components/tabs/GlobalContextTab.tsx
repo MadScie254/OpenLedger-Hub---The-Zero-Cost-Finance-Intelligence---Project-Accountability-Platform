@@ -68,14 +68,14 @@ export default function GlobalContextTab({ apiUrl }: GlobalContextProps) {
                 <select
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className="px-4 py-2 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white focus:outline-none focus:border-electric-blue transition-all"
+                    className="glass-select w-48"
                 >
-                    <option value="Kenya">Kenya</option>
-                    <option value="Nigeria">Nigeria</option>
-                    <option value="Tanzania">Tanzania</option>
-                    <option value="Uganda">Uganda</option>
-                    <option value="Ghana">Ghana</option>
-                    <option value="Rwanda">Rwanda</option>
+                    <option value="Kenya" className="bg-neutral-900">Kenya</option>
+                    <option value="Nigeria" className="bg-neutral-900">Nigeria</option>
+                    <option value="Tanzania" className="bg-neutral-900">Tanzania</option>
+                    <option value="Uganda" className="bg-neutral-900">Uganda</option>
+                    <option value="Ghana" className="bg-neutral-900">Ghana</option>
+                    <option value="Rwanda" className="bg-neutral-900">Rwanda</option>
                 </select>
             </div>
 
