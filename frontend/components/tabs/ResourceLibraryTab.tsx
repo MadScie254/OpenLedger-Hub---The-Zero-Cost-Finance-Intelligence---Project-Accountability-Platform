@@ -48,12 +48,12 @@ export default function ResourceLibraryTab({ apiUrl }: ResourceLibraryProps) {
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Search for books, guides, manuals..."
-                    className="flex-1 px-4 py-3 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-electric-blue"
+                    className="glass-input"
                 />
                 <button
                     onClick={searchBooks}
                     disabled={loading || !query.trim()}
-                    className="px-8 py-3 bg-gradient-to-r from-electric-blue to-purple-600 text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                    className="btn-primary"
                 >
                     {loading ? 'Searching...' : 'Search'}
                 </button>

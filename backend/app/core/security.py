@@ -26,7 +26,7 @@ def setup_cors(app):
     - Credentials allowed for cookies
     - No wildcard origins in production
     """
-    allowed_origins = os.getenv("FRONTEND_URL", "http://localhost:3001").split(",")
+    allowed_origins = os.getenv("FRONTEND_URL", "http://localhost:3000,http://localhost:3001").split(",")
     
     # Add CORS middleware
     app.add_middleware(
