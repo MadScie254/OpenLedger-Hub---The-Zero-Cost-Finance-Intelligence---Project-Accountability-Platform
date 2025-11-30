@@ -12,6 +12,24 @@ from database import db, init_db
 from app.core.security import setup_cors, add_security_headers
 
 
+# Initialize database on startup
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager"""
+    # Startup
+    print("[Starting] OpenLedger Hub...")
+    init_db()
+    await db.connect()
+    print(f"[Database] Connected: {settings.database_path}")
+    print(f"[CORS] Enabled for: {settings.cors_origins}")
+    print(f"[Access] Open Access - No Authentication Required")
+    
+    yield
+    
+    # Shutdown
+    await db.disconnect()
+    print("[Shutdown] OpenLedger Hub")
+
 
 # Create FastAPI application
 app = FastAPI(
@@ -60,7 +78,7 @@ from app.routes import analytics, external_data
 
 app.include_router(analytics.router, tags=["Analytics"])
 app.include_router(external_data.router, tags=["External Data & APIs"])
-app.include_router(finance.router, prefix="/api/finance", tags=[" Finance"])
+app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(assets.router, prefix="/api/assets", tags=["Assets"])
 app.include_router(impact.router, prefix="/api/impact", tags=["Impact"])
