@@ -149,6 +149,6 @@ def init_db():
         
         conn.commit()
         conn.close()
-        print("✅ Database initialized successfully")
+        print("[Database] Initialized successfully")
     else:
-        print("✅ Database already exists")
+        print("[Database] Already exists")
