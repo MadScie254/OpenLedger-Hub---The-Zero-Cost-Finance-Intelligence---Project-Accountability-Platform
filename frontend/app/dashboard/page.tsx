@@ -24,6 +24,7 @@ const TABS = [
 
 export default function DashboardPage() {
     const [activeTab, setActiveTab] = useState('global');
+    const API_URL = 'http://localhost:8000/api';
 
     const ActiveComponent = TABS.find(t => t.id === activeTab)?.component || GlobalContextTab;
 
@@ -34,7 +35,7 @@ export default function DashboardPage() {
                 <div className="flex h-16 items-center justify-between px-6">
                     <div className="flex items-center gap-2">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-500">
-                            <Icons.Activity size={20} />
+                            <Icons.Activity />
                         </div>
                         <h1 className="text-xl font-bold tracking-tight">
                             OpenLedger <span className="text-sky-500">Hub</span>
@@ -50,7 +51,7 @@ export default function DashboardPage() {
                             Systems Operational
                         </div>
                         <button className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-400 transition hover:bg-white/10 hover:text-white">
-                            <Icons.Bell size={18} />
+                            <Icons.Bell />
                         </button>
                         <div className="h-8 w-8 overflow-hidden rounded-full border border-white/10 bg-sky-500/20">
                             <img
@@ -85,7 +86,8 @@ export default function DashboardPage() {
             {/* Main Content */}
             <main className="p-6">
                 <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <ActiveComponent />
+                    {/* @ts-ignore - Dynamic component props */}
+                    <ActiveComponent apiUrl={API_URL} />
                 </div>
             </main>
         </div>
