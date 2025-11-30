@@ -1,6 +1,6 @@
 """
-OpenLedger Black - Main FastAPI Application
-Enterprise-grade REST API - surgical precision, zero bullshit
+OpenLedger Hub - Main FastAPI Application
+Open-access REST API for transparent finance & project tracking
 """
 
 from fastapi import FastAPI
@@ -17,25 +17,25 @@ from app.core.security import setup_cors, add_security_headers
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     # Startup
-    print("🚀 Starting OpenLedger Black...")
+    print("🚀 Starting OpenLedger Hub...")
     init_db()
     await db.connect()
     print(f"✅ Database connected: {settings.database_path}")
     print(f"🌍 CORS enabled for: {settings.cors_origins}")
-    print(f"🔐 JWT expiry: {settings.ACCESS_TOKEN_EXPIRE_MINUTES} minutes")
+    print(f"🔓 Open Access - No Authentication Required")
     
     yield
     
     # Shutdown
     await db.disconnect()
-    print("👋 Shutting down OpenLedger Black")
+    print("👋 Shutting down OpenLedger Hub")
 
 
 # Create FastAPI application
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Zero-cost, SQLite-powered, enterprise-grade finance & project intelligence platform",
+    description="Zero-cost, open-access finance & project intelligence platform for SMEs, NGOs, and community organizations",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan
@@ -56,29 +56,29 @@ async def root():
         "version": settings.APP_VERSION,
         "status": "operational",
         "environment": settings.ENVIRONMENT,
-        "message": "OpenLedger Black - Enterprise Finance Intelligence Platform"
+        "access": "open",
+        "message": "OpenLedger Hub - Open Access Finance Intelligence Platform"
     }
 
 
 @app.get("/health", tags=["Health"])
 async def health_check():
     """Health check endpoint"""
+    from datetime import datetime
     return {
         "status": "healthy",
         "database": "connected",
-        "timestamp": "2024-03-26T10:25:00Z"
+        "timestamp": datetime.utcnow().isoformat() + "Z"
     }
 
 
 # Import and register route modules
-from routes import auth, finance, projects, assets, impact
-from app.routes import auth_google, analytics, external_data
+from routes import finance, projects, assets, impact
+from app.routes import analytics, external_data
 
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(auth_google.router, tags=["Google OAuth"])
 app.include_router(analytics.router, tags=["Analytics"])
-app.include_router(external_data.router, tags=["External Data"])
-app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
+app.include_router(external_data.router, tags=["External Data & APIs"])
+app.include_router(finance.router, prefix="/api/finance", tags=[" Finance"])
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(assets.router, prefix="/api/assets", tags=["Assets"])
 app.include_router(impact.router, prefix="/api/impact", tags=["Impact"])
