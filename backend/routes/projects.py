@@ -15,7 +15,7 @@ from models import (
     MilestoneResponse,
     UserResponse
 )
-from auth import get_current_user, create_permission_dependency, log_audit
+# Auth removed - open access
 import os
 from config import settings
 
@@ -26,8 +26,7 @@ router = APIRouter()
 @router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project: ProjectCreate,
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.create"))
+    db: Database = Depends(get_db)
 ):
     """Create a new project"""
     
@@ -55,12 +54,12 @@ async def create_project(
             project.total_budget,
             project.donor_name,
             project.project_manager_id,
-            current_user.id
+            "system"
         )
     )
     await db.commit()
     
-    await log_audit(db, current_user.id, "CREATE", "projects", cursor.lastrowid)
+    # Audit logging removed
     
     # Fetch created project with manager name
     created = await db.fetch_one(
@@ -88,8 +87,7 @@ async def list_projects(
     status: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
-    db: Database = Depends(get_db),
-    current_user: UserResponse = Depends(create_permission_dependency("projects.view"))
+    db: Database = Depends(get_db)
 ):
     """List all projects with filters"""
     
