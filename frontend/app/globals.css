@@ -90,106 +90,81 @@ body {
 
     .dark .glass-card:hover {
         @apply border-sky-500/30 shadow-sky-500/10;
+
+        .btn-primary {
+            @apply glass-button text-white hover:shadow-lg;
+            background-color: var(--accent-primary);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            @apply glass-button border;
+            background-color: var(--glass-bg);
+            border-color: var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--glass-shine);
+        }
+
+        .btn-ghost {
+            @apply glass-button bg-transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-primary);
+            background-color: var(--glass-shine);
+        }
     }
 
-    .glass-card:hover {
-        @apply border-sky-500/30 shadow-lg;
-    }
-
-    .glass-input {
-        @apply w-full rounded-xl px-4 py-3 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 transition-all;
-        background-color: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        color: var(--text-primary);
-    }
-
-    .dark .glass-input {
-        background-color: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .glass-input:focus {
-        border-color: var(--accent-primary);
-    }
-
-    .glass-button {
-        @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 active:scale-95 flex items-center justify-center gap-2;
-    }
-
-    .btn-primary {
-        @apply glass-button text-white hover:shadow-lg;
-        background-color: var(--accent-primary);
-    }
-
-    .btn-primary:hover {
-        filter: brightness(1.1);
-        box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
-    }
-
-    .btn-secondary {
-        @apply glass-button border;
-        background-color: var(--glass-bg);
-        border-color: var(--glass-border);
-        color: var(--text-primary);
-    }
-
-    .btn-secondary:hover {
-        background-color: var(--glass-shine);
-    }
-
-    .btn-ghost {
-        @apply glass-button bg-transparent;
-        color: var(--text-secondary);
-    }
-
-    .btn-ghost:hover {
-        color: var(--text-primary);
-        background-color: var(--glass-shine);
-    }
-}
-
-/* ============================================================================
+    /* ============================================================================
    SCROLLBAR
    ============================================================================ */
 
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
 
-::-webkit-scrollbar-track {
-    background: transparent;
-}
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
-::-webkit-scrollbar-thumb {
-    background: rgba(150, 150, 150, 0.2);
-    border-radius: 3px;
-}
+    ::-webkit-scrollbar-thumb {
+        background: rgba(150, 150, 150, 0.2);
+        border-radius: 3px;
+    }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-primary);
-}
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-primary);
+    }
 
-/* ============================================================================
+    /* ============================================================================
    ANIMATIONS
    ============================================================================ */
 
-@keyframes float {
+    @keyframes float {
 
-    0%,
-    100% {
-        transform: translateY(0);
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
     }
 
-    50% {
-        transform: translateY(-10px);
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
     }
-}
 
-.animate-float {
-    animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+    .animate-pulse-slow {
+        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
