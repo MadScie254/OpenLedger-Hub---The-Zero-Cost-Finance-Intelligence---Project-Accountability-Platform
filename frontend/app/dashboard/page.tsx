@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { Icons } from '@/components/Icons';
+import ProjectsTab from '@/components/tabs/ProjectsTab';
+import FinanceTab from '@/components/tabs/FinanceTab';
 import GlobalContextTab from '@/components/tabs/GlobalContextTab';
 import MarketIntelligenceTab from '@/components/tabs/MarketIntelligenceTab';
 import ImpactSimulatorTab from '@/components/tabs/ImpactSimulatorTab';
@@ -13,6 +15,8 @@ import HolidayCalendarTab from '@/components/tabs/HolidayCalendarTab';
 import AirQualityTab from '@/components/tabs/AirQualityTab';
 
 const TABS = [
+    { id: 'projects', label: 'Projects', icon: <Icons.Briefcase />, component: ProjectsTab },
+    { id: 'finance', label: 'Finance', icon: <Icons.DollarSign />, component: FinanceTab },
     { id: 'global', label: 'Global Context', icon: <Icons.Globe />, component: GlobalContextTab },
     { id: 'market', label: 'Market Intel', icon: <Icons.TrendingUp />, component: MarketIntelligenceTab },
     { id: 'impact', label: 'Impact Sim', icon: <Icons.Activity />, component: ImpactSimulatorTab },
@@ -25,10 +29,10 @@ const TABS = [
 
 export default function DashboardPage() {
     const { theme, toggleTheme } = useTheme();
-    const [activeTab, setActiveTab] = useState('global');
+    const [activeTab, setActiveTab] = useState('projects');
     const API_URL = 'http://localhost:8000/api';
 
-    const ActiveComponent = TABS.find(t => t.id === activeTab)?.component || GlobalContextTab;
+    const ActiveComponent = TABS.find(t => t.id === activeTab)?.component || ProjectsTab;
 
     return (
         <div className="min-h-screen bg-neutral-950 text-white font-sans selection:bg-sky-500/30 relative overflow-hidden">
