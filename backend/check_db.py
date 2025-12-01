@@ -1,35 +1,31 @@
 import sqlite3
-import hashlib
 
-# Connect to database
 conn = sqlite3.connect('openledger.db')
 cursor = conn.cursor()
 
-# Get admin user
-users = cursor.execute('SELECT username, password_hash FROM users WHERE username="admin"').fetchall()
+print("\n" + "="*60)
+print("DATABASE PERSISTENCE VERIFICATION")
+print("="*60)
 
-print('='*60)
-print('DATABASE CHECK')
-print('='*60)
+print("\n📊 PROJECTS IN DATABASE:\n")
+cursor.execute('SELECT id, name, total_budget, status FROM projects ORDER BY id DESC LIMIT 5')
+projects = cursor.fetchall()
+for row in projects:
+    print(f"  [{row[0]}] {row[1]}")
+    print(f"      Budget: ${row[2]:,.2f} | Status: {row[3]}")
+    print()
 
-if users:
-    username, db_hash = users[0]
-    print(f'\nUsername in DB: {username}')
-    print(f'Hash in DB: {db_hash}')
-    
-    # Calculate correct hash
-    correct_hash = hashlib.sha256('root1234'.encode()).hexdigest()
-    print(f'\nExpected hash for "root1234": {correct_hash}')
-    print(f'\nHashes match: {db_hash == correct_hash}')
-    
-    if db_hash != correct_hash:
-        print('\n❌ MISMATCH! Updating database...')
-        cursor.execute('UPDATE users SET password_hash=? WHERE username="admin"', (correct_hash,))
-        conn.commit()
-        print('✅ Database updated with correct hash!')
-    else:
-        print('\n✅ Hash is correct!')
-else:
-    print('❌ No admin user found!')
+print("\n💰 TRANSACTIONS IN DATABASE:\n")
+cursor.execute('SELECT id, description, amount, transaction_type, date FROM transactions ORDER BY id DESC LIMIT 5')
+transactions = cursor.fetchall()
+for row in transactions:
+    print(f"  [{row[0]}] {row[1]}")
+    print(f"      Amount: ${row[2]:,.2f} | Type: {row[3]} | Date: {row[4]}")
+    print()
+
+print("="*60)
+print(f"Total Projects: {len(projects)}")
+print(f"Total Transactions Shown: {len(transactions)}")
+print("="*60 + "\n")
 
 conn.close()
