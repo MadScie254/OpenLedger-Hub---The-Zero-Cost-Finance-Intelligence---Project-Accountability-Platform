@@ -1,0 +1,8 @@
+{
+    "name": "Test Project",
+    "code": "TEST-001",
+    "description": "Test description",
+    "start_date": "2023-10-27",
+    "total_budget": 10000,
+    "donor_name": "Self-Funded"
+}
