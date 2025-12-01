@@ -50,14 +50,19 @@ export default function FinanceTab({ apiUrl }: FinanceTabProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const payload = {
+                transaction_type: formData.type.toLowerCase(), // Ensure lowercase enum
+                amount: parseFloat(formData.amount),
+                description: formData.description,
+                date: new Date().toISOString().split('T')[0], // Today's date
+                project_id: formData.project_id ? parseInt(formData.project_id) : null,
+                notes: `Category: ${formData.category}` // Store category in notes since we don't have IDs
+            };
+
             const res = await fetch(`${apiUrl}/finance/transactions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    amount: parseFloat(formData.amount),
-                    project_id: formData.project_id ? parseInt(formData.project_id) : null
-                })
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
                 setShowForm(false);

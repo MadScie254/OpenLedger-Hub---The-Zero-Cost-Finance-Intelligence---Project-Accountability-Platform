@@ -41,13 +41,19 @@ export default function ProjectsTab({ apiUrl }: ProjectsTabProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const payload = {
+                name: formData.name,
+                code: `PRJ-${Date.now()}`, // Auto-generate code
+                description: `${formData.description} | Location: ${formData.location}`, // Append location
+                start_date: new Date().toISOString().split('T')[0], // Today's date
+                total_budget: parseFloat(formData.budget),
+                donor_name: "Self-Funded" // Default
+            };
+
             const res = await fetch(`${apiUrl}/projects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    budget: parseFloat(formData.budget)
-                })
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
                 setShowForm(false);
@@ -167,14 +173,14 @@ export default function ProjectsTab({ apiUrl }: ProjectsTabProps) {
                             </div>
                             <div className="flex items-start justify-between mb-4">
                                 <div className={`p-3 rounded-xl ${project.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500' :
-                                        project.status === 'Completed' ? 'bg-blue-500/10 text-blue-500' :
-                                            'bg-amber-500/10 text-amber-500'
+                                    project.status === 'Completed' ? 'bg-blue-500/10 text-blue-500' :
+                                        'bg-amber-500/10 text-amber-500'
                                     }`}>
                                     <Icons.Briefcase className="w-6 h-6" />
                                 </div>
                                 <span className={`px-3 py-1 rounded-full text-xs font-medium border ${project.status === 'Active' ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' :
-                                        project.status === 'Completed' ? 'bg-blue-500/5 border-blue-500/20 text-blue-400' :
-                                            'bg-amber-500/5 border-amber-500/20 text-amber-400'
+                                    project.status === 'Completed' ? 'bg-blue-500/5 border-blue-500/20 text-blue-400' :
+                                        'bg-amber-500/5 border-amber-500/20 text-amber-400'
                                     }`}>
                                     {project.status}
                                 </span>
