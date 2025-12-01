@@ -42,8 +42,8 @@ async def create_project(
         """
         INSERT INTO projects 
         (name, code, description, start_date, end_date, total_budget, 
-         donor_name, project_manager_id, created_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+         donor_name, project_manager_name)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             project.name,
@@ -53,8 +53,7 @@ async def create_project(
             project.end_date,
             project.total_budget,
             project.donor_name,
-            project.project_manager_id,
-            "system"
+            "System Admin" # Default manager name since we removed auth
         )
     )
     await db.commit()
@@ -65,14 +64,12 @@ async def create_project(
         """
         SELECT 
             p.*,
-            u.full_name as project_manager_name,
             CASE 
                 WHEN p.total_budget > 0 
                 THEN ROUND((p.spent_amount * 100.0 / p.total_budget), 2)
                 ELSE 0
             END as budget_utilization
         FROM projects p
-        LEFT JOIN users u ON p.project_manager_id = u.id
         WHERE p.id = ?
         """,
         (cursor.lastrowid,)
@@ -103,14 +100,12 @@ async def list_projects(
         f"""
         SELECT 
             p.*,
-            u.full_name as project_manager_name,
             CASE 
                 WHEN p.total_budget > 0 
                 THEN ROUND((p.spent_amount * 100.0 / p.total_budget), 2)
                 ELSE 0
             END as budget_utilization
         FROM projects p
-        LEFT JOIN users u ON p.project_manager_id = u.id
         WHERE {where_clause}
         ORDER BY p.created_at DESC
         LIMIT ? OFFSET ?
@@ -132,14 +127,12 @@ async def get_project(
         """
         SELECT 
             p.*,
-            u.full_name as project_manager_name,
             CASE 
                 WHEN p.total_budget > 0 
                 THEN ROUND((p.spent_amount * 100.0 / p.total_budget), 2)
                 ELSE 0
             END as budget_utilization
         FROM projects p
-        LEFT JOIN users u ON p.project_manager_id = u.id
         WHERE p.id = ?
         """,
         (project_id,)

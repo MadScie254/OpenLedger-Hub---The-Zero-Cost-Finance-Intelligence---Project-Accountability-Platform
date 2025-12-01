@@ -42,8 +42,8 @@ async def create_transaction(
         """
         INSERT INTO transactions 
         (transaction_type, category_id, amount, description, reference_number, 
-         date, created_by, project_id, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+         date, project_id, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             transaction.transaction_type,
@@ -52,7 +52,6 @@ async def create_transaction(
             transaction.description,
             ref_number,
             transaction.date,
-            "system",
             transaction.project_id,
             transaction.notes
         )
@@ -158,8 +157,8 @@ async def create_budget(
     cursor = await db.execute(
         """
         INSERT INTO budgets 
-        (name, description, fiscal_year, start_date, end_date, total_amount, created_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        (name, description, fiscal_year, start_date, end_date, total_amount)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
         (
             budget.name,
@@ -167,8 +166,7 @@ async def create_budget(
             budget.fiscal_year,
             budget.start_date,
             budget.end_date,
-            budget.total_amount,
-            "system"
+            budget.total_amount
         )
     )
     await db.commit()
