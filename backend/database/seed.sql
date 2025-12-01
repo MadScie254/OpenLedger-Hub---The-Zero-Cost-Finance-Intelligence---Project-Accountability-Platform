@@ -2,76 +2,7 @@
 -- Sample data for demonstration and testing
 
 -- ============================================================================
--- ROLES & PERMISSIONS
--- ============================================================================
-
-INSERT INTO roles (name, description) VALUES 
-('admin', 'System administrator with full access'),
-('finance_manager', 'Manages financial operations and budgets'),
-('project_manager', 'Manages projects and deliverables'),
-('auditor', 'Read-only access for auditing purposes'),
-('staff', 'Basic user access');
-
-INSERT INTO permissions (name, resource, action) VALUES
--- Finance permissions
-('finance.view', 'finance', 'read'),
-('finance.create', 'finance', 'create'),
-('finance.update', 'finance', 'update'),
-('finance.delete', 'finance', 'delete'),
-('finance.export', 'finance', 'export'),
-
--- Project permissions
-('projects.view', 'projects', 'read'),
-('projects.create', 'projects', 'create'),
-('projects.update', 'projects', 'update'),
-('projects.delete', 'projects', 'delete'),
-
--- Asset permissions
-('assets.view', 'assets', 'read'),
-('assets.create', 'assets', 'create'),
-('assets.update', 'assets', 'update'),
-('assets.delete', 'assets', 'delete'),
-
--- Impact permissions
-('impact.view', 'impact', 'read'),
-('impact.create', 'impact', 'create'),
-('impact.update', 'impact', 'update'),
-
--- Admin permissions
-('users.manage', 'users', 'manage'),
-('system.configure', 'system', 'configure');
-
--- Assign permissions to roles
--- Admin gets everything
-INSERT INTO role_permissions (role_id, permission_id) 
-SELECT 1, id FROM permissions;
-
--- Finance Manager
-INSERT INTO role_permissions (role_id, permission_id) 
-SELECT 2, id FROM permissions WHERE resource IN ('finance', 'projects');
-
--- Project Manager
-INSERT INTO role_permissions (role_id, permission_id) 
-SELECT 3, id FROM permissions WHERE resource IN ('projects', 'assets', 'impact');
-
--- Auditor (read-only)
-INSERT INTO role_permissions (role_id, permission_id) 
-SELECT 4, id FROM permissions WHERE action = 'read';
-
--- Staff (basic access)
-INSERT INTO role_permissions (role_id, permission_id) 
-SELECT 5, id FROM permissions WHERE action = 'read' AND resource IN ('projects', 'impact');
-
--- ============================================================================
--- USERS (password: OpenLedger2024!)
--- ============================================================================
-
-INSERT INTO users (email, username, password_hash, full_name, role_id, is_active) VALUES
-('admin@openledger.org', 'admin', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'System Administrator', 1, 1),
-('finance@openledger.org', 'finance_mgr', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'Sarah Johnson', 2, 1),
-('projects@openledger.org', 'project_mgr', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'Michael Chen', 3, 1),
-('auditor@openledger.org', 'auditor', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'Emily Rodriguez', 4, 1),
-('staff@openledger.org', 'staff_user', '81dc9bdb52d04dc20036dbd8313ed055d62798e3a9c59c5ac4fff99e293d9250', 'David Kimani', 5, 1);
+-- Roles and Users removed for Open Access mode
 
 -- ============================================================================
 -- TRANSACTION CATEGORIES
@@ -105,7 +36,7 @@ INSERT INTO transaction_categories (name, type, description) VALUES
 -- PROJECTS
 -- ============================================================================
 
-INSERT INTO projects (name, code, description, start_date, end_date, status, total_budget, spent_amount, donor_name, project_manager_id, created_by) VALUES
+INSERT INTO projects (name, code, description, start_date, end_date, status, total_budget, spent_amount, donor_name, project_manager_name) VALUES
 (
     'Community Health Initiative',
     'CHI-2024-01',
@@ -116,8 +47,7 @@ INSERT INTO projects (name, code, description, start_date, end_date, status, tot
     250000.00,
     87500.00,
     'Global Health Foundation',
-    3,
-    1
+    'Michael Chen'
 ),
 (
     'Youth Empowerment Program',
@@ -129,8 +59,7 @@ INSERT INTO projects (name, code, description, start_date, end_date, status, tot
     180000.00,
     54000.00,
     'Youth Development Fund',
-    3,
-    1
+    'Michael Chen'
 ),
 (
     'Agricultural Support Project',
@@ -142,8 +71,7 @@ INSERT INTO projects (name, code, description, start_date, end_date, status, tot
     320000.00,
     96000.00,
     'Sustainable Agriculture Alliance',
-    3,
-    1
+    'Michael Chen'
 ),
 (
     'Education Access Initiative',
@@ -155,8 +83,7 @@ INSERT INTO projects (name, code, description, start_date, end_date, status, tot
     450000.00,
     382500.00,
     'Education for All Coalition',
-    3,
-    1
+    'Michael Chen'
 );
 
 -- ============================================================================
@@ -192,43 +119,43 @@ INSERT INTO milestones (project_id, name, description, due_date, completion_date
 -- ============================================================================
 
 -- January 2024 transactions
-INSERT INTO transactions (transaction_type, category_id, amount, description, reference_number, date, created_by, project_id) VALUES
-('income', 1, 100000.00, 'Q1 Disbursement - Community Health Initiative', 'DON-2024-001', '2024-01-05', 2, 1),
-('income', 1, 60000.00, 'Q1 Disbursement - Youth Empowerment Program', 'DON-2024-002', '2024-01-10', 2, 2),
-('expense', 6, 12500.00, 'Salaries - January', 'SAL-2024-001', '2024-01-31', 2, NULL),
-('expense', 7, 3500.00, 'Office Rent - January', 'RENT-2024-001', '2024-01-05', 2, NULL),
-('expense', 8, 850.00, 'Utilities - January', 'UTIL-2024-001', '2024-01-15', 2, NULL),
-('expense', 9, 4200.00, 'Field Travel - CHI Project', 'TRV-2024-001', '2024-01-20', 2, 1),
-('expense', 11, 650.00, 'Office Supplies', 'SUP-2024-001', '2024-01-12', 2, NULL),
+INSERT INTO transactions (transaction_type, category_id, amount, description, reference_number, date, project_id) VALUES
+('income', 1, 100000.00, 'Q1 Disbursement - Community Health Initiative', 'DON-2024-001', '2024-01-05', 1),
+('income', 1, 60000.00, 'Q1 Disbursement - Youth Empowerment Program', 'DON-2024-002', '2024-01-10', 2),
+('expense', 6, 12500.00, 'Salaries - January', 'SAL-2024-001', '2024-01-31', NULL),
+('expense', 7, 3500.00, 'Office Rent - January', 'RENT-2024-001', '2024-01-05', NULL),
+('expense', 8, 850.00, 'Utilities - January', 'UTIL-2024-001', '2024-01-15', NULL),
+('expense', 9, 4200.00, 'Field Travel - CHI Project', 'TRV-2024-001', '2024-01-20', 1),
+('expense', 11, 650.00, 'Office Supplies', 'SUP-2024-001', '2024-01-12', NULL),
 
 -- February 2024 transactions
-('income', 1, 80000.00, 'Q1 Disbursement - Agricultural Support', 'DON-2024-003', '2024-02-01', 2, 3),
-('income', 1, 150000.00, 'Q3 Disbursement - Education Access Initiative', 'DON-2024-004', '2024-02-15', 2, 4),
-('expense', 6, 12500.00, 'Salaries - February', 'SAL-2024-002', '2024-02-29', 2, NULL),
-('expense', 7, 3500.00, 'Office Rent - February', 'RENT-2024-002', '2024-02-05', 2, NULL),
-('expense', 8, 920.00, 'Utilities - February', 'UTIL-2024-002', '2024-02-15', 2, NULL),
-('expense', 10, 15000.00, 'Health Worker Training Workshop', 'TRAIN-2024-001', '2024-02-22', 2, 1),
-('expense', 12, 8500.00, 'Medical Equipment Purchase', 'EQUIP-2024-001', '2024-02-25', 2, 1),
-('expense', 9, 3800.00, 'Project Site Visits', 'TRV-2024-002', '2024-02-18', 2, 3),
+('income', 1, 80000.00, 'Q1 Disbursement - Agricultural Support', 'DON-2024-003', '2024-02-01', 3),
+('income', 1, 150000.00, 'Q3 Disbursement - Education Access Initiative', 'DON-2024-004', '2024-02-15', 4),
+('expense', 6, 12500.00, 'Salaries - February', 'SAL-2024-002', '2024-02-29', NULL),
+('expense', 7, 3500.00, 'Office Rent - February', 'RENT-2024-002', '2024-02-05', NULL),
+('expense', 8, 920.00, 'Utilities - February', 'UTIL-2024-002', '2024-02-15', NULL),
+('expense', 10, 15000.00, 'Health Worker Training Workshop', 'TRAIN-2024-001', '2024-02-22', 1),
+('expense', 12, 8500.00, 'Medical Equipment Purchase', 'EQUIP-2024-001', '2024-02-25', 1),
+('expense', 9, 3800.00, 'Project Site Visits', 'TRV-2024-002', '2024-02-18', 3),
 
 -- March 2024 transactions
-('income', 1, 100000.00, 'Q2 Disbursement - Community Health Initiative', 'DON-2024-005', '2024-03-05', 2, 1),
-('income', 1, 60000.00, 'Q2 Disbursement - Youth Empowerment', 'DON-2024-006', '2024-03-10', 2, 2),
-('income', 1, 80000.00, 'Q2 Disbursement - Agricultural Support', 'DON-2024-007', '2024-03-12', 2, 3),
-('expense', 6, 12500.00, 'Salaries - March', 'SAL-2024-003', '2024-03-31', 2, NULL),
-('expense', 7, 3500.00, 'Office Rent - March', 'RENT-2024-003', '2024-03-05', 2, NULL),
-('expense', 8, 890.00, 'Utilities - March', 'UTIL-2024-003', '2024-03-15', 2, NULL),
-('expense', 10, 12000.00, 'Youth Skills Training', 'TRAIN-2024-002', '2024-03-20', 2, 2),
-('expense', 11, 850.00, 'Office Supplies', 'SUP-2024-002', '2024-03-08', 2, NULL),
-('expense', 9, 5200.00, 'Field Transportation', 'TRV-2024-003', '2024-03-25', 2, 2),
-('expense', 12, 18000.00, 'Mobile Clinic Vehicles', 'EQUIP-2024-002', '2024-03-28', 2, 1);
+('income', 1, 100000.00, 'Q2 Disbursement - Community Health Initiative', 'DON-2024-005', '2024-03-05', 1),
+('income', 1, 60000.00, 'Q2 Disbursement - Youth Empowerment', 'DON-2024-006', '2024-03-10', 2),
+('income', 1, 80000.00, 'Q2 Disbursement - Agricultural Support', 'DON-2024-007', '2024-03-12', 3),
+('expense', 6, 12500.00, 'Salaries - March', 'SAL-2024-003', '2024-03-31', NULL),
+('expense', 7, 3500.00, 'Office Rent - March', 'RENT-2024-003', '2024-03-05', NULL),
+('expense', 8, 890.00, 'Utilities - March', 'UTIL-2024-003', '2024-03-15', NULL),
+('expense', 10, 12000.00, 'Youth Skills Training', 'TRAIN-2024-002', '2024-03-20', 2),
+('expense', 11, 850.00, 'Office Supplies', 'SUP-2024-002', '2024-03-08', NULL),
+('expense', 9, 5200.00, 'Field Transportation', 'TRV-2024-003', '2024-03-25', 2),
+('expense', 12, 18000.00, 'Mobile Clinic Vehicles', 'EQUIP-2024-002', '2024-03-28', 1);
 
 -- ============================================================================
 -- BUDGETS
 -- ============================================================================
 
-INSERT INTO budgets (name, description, fiscal_year, start_date, end_date, total_amount, status, created_by) VALUES
-('FY 2024 Operating Budget', 'Annual operating budget for 2024', 2024, '2024-01-01', '2024-12-31', 500000.00, 'active', 1);
+INSERT INTO budgets (name, description, fiscal_year, start_date, end_date, total_amount, status) VALUES
+('FY 2024 Operating Budget', 'Annual operating budget for 2024', 2024, '2024-01-01', '2024-12-31', 500000.00, 'active');
 
 INSERT INTO budget_items (budget_id, category_id, allocated_amount, spent_amount) VALUES
 (1, 6, 150000.00, 37500.00),  -- Salaries
@@ -293,44 +220,44 @@ INSERT INTO kpi_categories (name, description) VALUES
 ('Economic', 'Economic empowerment metrics'),
 ('Agricultural', 'Agricultural productivity metrics');
 
-INSERT INTO kpis (category_id, name, description, measurement_unit, target_value, frequency, created_by) VALUES
-(1, 'Health Screenings Conducted', 'Number of health screenings provided', 'screenings', 5000, 'monthly', 1),
-(1, 'Patients Treated', 'Number of patients receiving treatment', 'patients', 2000, 'monthly', 1),
-(2, 'Students Enrolled', 'Number of students enrolled in programs', 'students', 500, 'quarterly', 1),
-(2, 'Teacher Training Hours', 'Total hours of teacher training delivered', 'hours', 240, 'monthly', 1),
-(3, 'Youth Trained', 'Youth completing skills training', 'individuals', 200, 'quarterly', 1),
-(3, 'Businesses Started', 'New businesses launched by graduates', 'businesses', 50, 'yearly', 1),
-(4, 'Farmers Trained', 'Farmers receiving agricultural training', 'farmers', 500, 'quarterly', 1),
-(4, 'Crop Yield Increase', 'Average crop yield increase percentage', 'percentage', 30, 'yearly', 1);
+INSERT INTO kpis (category_id, name, description, measurement_unit, target_value, frequency) VALUES
+(1, 'Health Screenings Conducted', 'Number of health screenings provided', 'screenings', 5000, 'monthly'),
+(1, 'Patients Treated', 'Number of patients receiving treatment', 'patients', 2000, 'monthly'),
+(2, 'Students Enrolled', 'Number of students enrolled in programs', 'students', 500, 'quarterly'),
+(2, 'Teacher Training Hours', 'Total hours of teacher training delivered', 'hours', 240, 'monthly'),
+(3, 'Youth Trained', 'Youth completing skills training', 'individuals', 200, 'quarterly'),
+(3, 'Businesses Started', 'New businesses launched by graduates', 'businesses', 50, 'yearly'),
+(4, 'Farmers Trained', 'Farmers receiving agricultural training', 'farmers', 500, 'quarterly'),
+(4, 'Crop Yield Increase', 'Average crop yield increase percentage', 'percentage', 30, 'yearly');
 
 -- ============================================================================
 -- KPI VALUES (Sample data)
 -- ============================================================================
 
-INSERT INTO kpi_values (kpi_id, value, recorded_date, project_id, recorded_by) VALUES
+INSERT INTO kpi_values (kpi_id, value, recorded_date, project_id) VALUES
 -- Health screenings
-(1, 420, '2024-01-31', 1, 3),
-(1, 485, '2024-02-29', 1, 3),
-(1, 510, '2024-03-31', 1, 3),
+(1, 420, '2024-01-31', 1),
+(1, 485, '2024-02-29', 1),
+(1, 510, '2024-03-31', 1),
 
 -- Patients treated
-(2, 168, '2024-01-31', 1, 3),
-(2, 192, '2024-02-29', 1, 3),
-(2, 205, '2024-03-31', 1, 3),
+(2, 168, '2024-01-31', 1),
+(2, 192, '2024-02-29', 1),
+(2, 205, '2024-03-31', 1),
 
 -- Students enrolled
-(3, 125, '2024-03-31', 4, 3),
+(3, 125, '2024-03-31', 4),
 
 -- Teacher training
-(4, 18, '2024-01-31', 4, 3),
-(4, 22, '2024-02-29', 4, 3),
-(4, 20, '2024-03-31', 4, 3),
+(4, 18, '2024-01-31', 4),
+(4, 22, '2024-02-29', 4),
+(4, 20, '2024-03-31', 4),
 
 -- Youth trained
-(5, 45, '2024-03-31', 2, 3),
+(5, 45, '2024-03-31', 2),
 
 -- Farmers trained
-(7, 150, '2024-03-31', 3, 3);
+(7, 150, '2024-03-31', 3);
 
 -- ============================================================================
 -- BENEFICIARIES

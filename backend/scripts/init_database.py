@@ -51,21 +51,14 @@ def init_database():
         conn.commit()
         
         # Verify database
-        cursor.execute("SELECT COUNT(*) FROM users")
-        user_count = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM projects")
+        project_count = cursor.fetchone()[0]
         print(f"\n📊 Database Statistics:")
-        print(f"   - Users: {user_count}")
+        print(f"   - Projects: {project_count}")
         
-        cursor.execute("PRAGMA table_info(users)")
+        cursor.execute("PRAGMA table_info(projects)")
         columns = cursor.fetchall()
-        print(f"   - User table columns: {len(columns)}")
-        
-        # Check for Google OAuth columns
-        column_names = [col[1] for col in columns]
-        if 'google_sub' in column_names and 'google_picture' in column_names:
-            print("   - ✅ Google OAuth columns present")
-        else:
-            print("   - ⚠️  Google OAuth columns missing!")
+        print(f"   - Project table columns: {len(columns)}")
         
         print("\n✨ Database initialization complete!")
         print("=" * 60)
