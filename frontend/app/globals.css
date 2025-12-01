@@ -82,52 +82,6 @@ body {
         @apply backdrop-blur-xl shadow-xl transition-colors duration-300;
         background-color: var(--glass-bg);
         border: 1px solid var(--glass-border);
-    }
-
-    .glass-card {
-        @apply glass-panel rounded-2xl transition-all duration-300 hover:-translate-y-1;
-    }
-
-    .dark .glass-card:hover {
-        @apply border-sky-500/30 shadow-sky-500/10;
-
-        .btn-primary {
-            @apply glass-button text-white hover:shadow-lg;
-            background-color: var(--accent-primary);
-        }
-
-        .btn-primary:hover {
-            filter: brightness(1.1);
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
-        }
-
-        .btn-secondary {
-            @apply glass-button border;
-            background-color: var(--glass-bg);
-            border-color: var(--glass-border);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--glass-shine);
-        }
-
-        .btn-ghost {
-            @apply glass-button bg-transparent;
-            color: var(--text-secondary);
-        }
-
-        .btn-ghost:hover {
-            color: var(--text-primary);
-            background-color: var(--glass-shine);
-        }
-    }
-
-    /* ============================================================================
-   SCROLLBAR
-   ============================================================================ */
-
-    ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
     }
