@@ -120,7 +120,6 @@ class TransactionCreate(TransactionBase):
 class TransactionResponse(TransactionBase):
     id: int
     reference_number: Optional[str] = None
-    created_by: int
     created_at: datetime
     category_name: Optional[str] = None
     project_name: Optional[str] = None
@@ -195,7 +194,7 @@ class ProjectBase(BaseModel):
     end_date: Optional[date] = None
     total_budget: float = Field(..., ge=0)
     donor_name: Optional[str] = None
-    project_manager_id: Optional[int] = None
+    project_manager_name: Optional[str] = None
 
 
 class ProjectCreate(ProjectBase):
@@ -215,10 +214,8 @@ class ProjectResponse(ProjectBase):
     status: ProjectStatus
     spent_amount: float
     budget_utilization: Optional[float] = None
-    created_by: int
     created_at: datetime
     updated_at: datetime
-    project_manager_name: Optional[str] = None
     
     class Config:
         from_attributes = True
