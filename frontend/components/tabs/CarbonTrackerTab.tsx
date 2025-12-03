@@ -53,7 +53,7 @@ export default function CarbonTrackerTab({ apiUrl }: CarbonTrackerProps) {
                                 type="number"
                                 value={inputs.electricity}
                                 onChange={(e) => setInputs({ ...inputs, electricity: Number(e.target.value) })}
-                                className="w-full px-4 py-2 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white focus:outline-none focus:border-electric-blue"
+                                className="glass-input"
                                 placeholder="e.g., 1000"
                             />
                         </div>
@@ -64,7 +64,7 @@ export default function CarbonTrackerTab({ apiUrl }: CarbonTrackerProps) {
                                 type="number"
                                 value={inputs.fuel}
                                 onChange={(e) => setInputs({ ...inputs, fuel: Number(e.target.value) })}
-                                className="w-full px-4 py-2 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white focus:outline-none focus:border-electric-blue"
+                                className="glass-input"
                                 placeholder="e.g., 50"
                             />
                         </div>
@@ -75,7 +75,7 @@ export default function CarbonTrackerTab({ apiUrl }: CarbonTrackerProps) {
                                 type="number"
                                 value={inputs.flights}
                                 onChange={(e) => setInputs({ ...inputs, flights: Number(e.target.value) })}
-                                className="w-full px-4 py-2 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white focus:outline-none focus:border-electric-blue"
+                                className="glass-input"
                                 placeholder="e.g., 5000"
                             />
                         </div>

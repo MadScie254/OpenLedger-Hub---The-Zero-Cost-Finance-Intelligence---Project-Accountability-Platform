@@ -38,9 +38,10 @@ export default function BeneficiaryGeneratorTab({ apiUrl }: BeneficiaryGenerator
                 </div>
                 <div className="flex gap-3">
                     <select
+                        title="Select nationality"
                         value={nationality}
                         onChange={(e) => setNationality(e.target.value)}
-                        className="px-4 py-2 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white focus:outline-none focus:border-electric-blue"
+                        className="glass-select"
                     >
                         <option value="ke">Kenya</option>
                         <option value="ng">Nigeria</option>
@@ -54,7 +55,8 @@ export default function BeneficiaryGeneratorTab({ apiUrl }: BeneficiaryGenerator
                         onChange={(e) => setCount(Number(e.target.value))}
                         min="1"
                         max="50"
-                        className="w-20 px-4 py-2 bg-dark-600/50 border border-electric-blue/30 rounded-lg text-white focus:outline-none focus:border-electric-blue"
+                        placeholder="Count"
+                        className="glass-input w-20"
                     />
                     <button
                         onClick={generateBeneficiaries}
