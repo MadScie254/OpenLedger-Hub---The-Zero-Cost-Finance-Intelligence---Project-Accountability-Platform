@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Icons } from '../Icons';
+import { useToast } from '@/context/ToastContext';
 
 interface ProjectsTabProps {
     apiUrl: string;
 }
 
 export default function ProjectsTab({ apiUrl }: ProjectsTabProps) {
+    const { showToast } = useToast();
     const [projects, setProjects] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [showForm, setShowForm] = useState(false);
@@ -59,9 +61,13 @@ export default function ProjectsTab({ apiUrl }: ProjectsTabProps) {
                 setShowForm(false);
                 setFormData({ name: '', description: '', budget: '', status: 'Planning', location: '' });
                 fetchProjects();
+                showToast(`Project "${formData.name}" created successfully!`, 'success');
+            } else {
+                showToast('Failed to create project. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Error creating project:', error);
+            showToast('An error occurred while creating the project.', 'error');
         }
     };
 

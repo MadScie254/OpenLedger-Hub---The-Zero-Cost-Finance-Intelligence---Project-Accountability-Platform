@@ -1,0 +1,153 @@
+/* ============================================================================
+   ENHANCED ANIMATIONS - BREATHING LIFE INTO OPENLEDGER
+   ============================================================================ */
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes glow-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 40px rgba(14, 165, 233, 0.6);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-scale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animation utility classes */
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+    animation: shimmer 2s linear infinite;
+}
+
+.animate-slide-up {
+    animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+    animation: fade-in-scale 0.3s ease-out forwards;
+}
+
+/* Stagger animations for lists */
+.animate-stagger>* {
+    animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-stagger>*:nth-child(1) {
+    anim ation-delay: 0s;
+}
+
+.animate-stagger>*:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.animate-stagger>*:nth-child(3) {
+    animation-delay: 0.1s;
+}
+
+.animate-stagger>*:nth-child(4) {
+    animation-delay: 0.15s;
+}
+
+.animate-stagger>*:nth-child(5) {
+    animation-delay: 0.2s;
+}
+
+.animate-stagger>*:nth-child(6) {
+    animation-delay: 0.25s;
+}
+
+.animate-stagger>*:nth-child(7) {
+    animation-delay: 0.3s;
+}
+
+.animate-stagger>*:nth-child(8) {
+    animation-delay: 0.35s;
+}
+
+.animate-stagger>*:nth-child(9) {
+    animation-delay: 0.4s;
+}
+
+/* Button ripple effect */
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.btn-primary:active::after,
+.btn-ghost:active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.6s ease-out;
+}
+
+/* Skeleton loader */
+.skeleton {
+    background: linear-gradient(90deg, var(--glass-bg) 25%, var(--glass-shine) 50%, var(--glass-bg) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 0.5rem;
+}

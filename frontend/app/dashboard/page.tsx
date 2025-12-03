@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { Icons } from '@/components/Icons';
+import { LiveStats } from '@/components/LiveStats';
 import ProjectsTab from '@/components/tabs/ProjectsTab';
 import FinanceTab from '@/components/tabs/FinanceTab';
 import GlobalContextTab from '@/components/tabs/GlobalContextTab';
@@ -106,6 +107,9 @@ export default function DashboardPage() {
             {/* Main Content */}
             <main className="p-6 relative z-10">
                 <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {/* Live Statistics */}
+                    <LiveStats className="mb-6" />
+
                     {/* @ts-ignore - Dynamic component props */}
                     <ActiveComponent apiUrl={API_URL} />
                 </div>

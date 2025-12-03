@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Icons } from '../Icons';
+import { useToast } from '@/context/ToastContext';
 
 interface FinanceTabProps {
     apiUrl: string;
 }
 
 export default function FinanceTab({ apiUrl }: FinanceTabProps) {
+    const { showToast } = useToast();
     const [transactions, setTransactions] = useState<any[]>([]);
     const [projects, setProjects] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -68,9 +70,13 @@ export default function FinanceTab({ apiUrl }: FinanceTabProps) {
                 setShowForm(false);
                 setFormData({ project_id: '', amount: '', type: 'Expense', category: 'Operational', description: '' });
                 fetchData();
+                showToast(`Transaction of $${formData.amount} recorded successfully!`, 'success');
+            } else {
+                showToast('Failed to record transaction. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Error creating transaction:', error);
+            showToast('An error occurred while recording the transaction.', 'error');
         }
     };
 
