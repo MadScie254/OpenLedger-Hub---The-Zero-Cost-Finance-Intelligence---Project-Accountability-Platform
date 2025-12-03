@@ -197,11 +197,11 @@ export default function ProjectsTab({ apiUrl }: ProjectsTabProps) {
                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
                                 <div>
                                     <p className="text-xs text-neutral-500 mb-1">Budget</p>
-                                    <p className="text-white font-mono">${project.budget?.toLocaleString()}</p>
+                                    <p className="text-white font-mono font-bold text-lg">${project.total_budget?.toLocaleString()}</p>
                                 </div>
                                 <div>
                                     <p className="text-xs text-neutral-500 mb-1">Location</p>
-                                    <p className="text-white truncate">{project.location}</p>
+                                    <p className="text-white truncate font-medium">{project.description?.split('Location: ')[1] || 'N/A'}</p>
                                 </div>
                             </div>
                         </div>
